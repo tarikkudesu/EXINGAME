@@ -7,41 +7,116 @@ public partial class Mutant : CharacterBody3D
 	public NodePath PlayerNodePath { get; set; }
 	
 	[Export]
+	public NodePath NavigationAgentPath { get; set; }
+	
+	[Export]
 	public float DetectionRange = 10.0f;
 	
 	[Export]
-	public float Gravity = 9.8f;
+	public float MinDistanceToPlayer = 1.5f;
+	
+	[Export]
+	public float MaxDistanceFromSpawn = 20.0f;
+	
+	[Export]
+	public float Gravity = 30.0f;
+	
+	[Export]
+	public float Speed = 5.0f;
 	
 	private CharacterBody3D player;
 	private NavigationAgent3D navAgent;
-	private const float Speed = 5.0f;
+	private Vector3 spawnPosition;
 	
 	public override void _Ready()
 	{
-		// Get the player node using the exported path
-		player = GetNode<CharacterBody3D>(PlayerNodePath);
+		GD.Print("=== Mutant _Ready() called ===");
 		
-		// Get the NavigationAgent3D child node
-		navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
+		// Store the spawn position
+		spawnPosition = GlobalPosition;
+		GD.Print($"Spawn position: {spawnPosition}");
+		
+		// Get the player node using the exported path
+		GD.Print($"PlayerNodePath: {PlayerNodePath}");
+		if (PlayerNodePath != null && !PlayerNodePath.IsEmpty)
+		{
+			player = GetNode<CharacterBody3D>(PlayerNodePath);
+			if (player == null)
+			{
+				GD.PrintErr("Player node not found at path: " + PlayerNodePath);
+			}
+			else
+			{
+				GD.Print("Player node found successfully");
+			}
+		}
+		else
+		{
+			GD.PrintErr("PlayerNodePath is not set!");
+		}
+		
+		// Get the NavigationAgent3D using the exported path
+		GD.Print($"NavigationAgentPath: {NavigationAgentPath}");
+		if (NavigationAgentPath != null && !NavigationAgentPath.IsEmpty)
+		{
+			GD.Print("Attempting to get NavigationAgent3D...");
+			try
+			{
+				navAgent = GetNode<NavigationAgent3D>(NavigationAgentPath);
+				GD.Print("GetNode call completed");
+				if (navAgent == null)
+				{
+					GD.PrintErr("NavigationAgent3D not found at path: " + NavigationAgentPath);
+				}
+				else
+				{
+					GD.Print("NavigationAgent3D found successfully");
+				}
+			}
+			catch (Exception ex)
+			{
+				GD.PrintErr($"Error getting NavigationAgent3D: {ex.Message}");
+				GD.PrintErr($"Exception type: {ex.GetType().Name}");
+				GD.PrintErr($"Stack trace: {ex.StackTrace}");
+			}
+		}
+		else
+		{
+			GD.PrintErr("NavigationAgentPath is not set! Mutant will use direct movement.");
+		}
 		
 		// Wait for navigation to be ready (important for first frame)
-		CallDeferred(MethodName.SetupNavigation);
+		if (player != null && navAgent != null)
+		{
+			CallDeferred(MethodName.SetupNavigation);
+		}
+		
+		GD.Print("=== Mutant _Ready() complete ===");
 	}
 	
 	private void SetupNavigation()
 	{
-		// Set initial target to player position
-		navAgent.TargetPosition = player.GlobalPosition;
-		GD.Print("Navigation setup complete");
+		if (player != null && navAgent != null)
+		{
+			// Set initial target to player position
+			navAgent.TargetPosition = player.GlobalPosition;
+			GD.Print("Navigation setup complete");
+		}
 	}
 	
 	public override void _PhysicsProcess(double delta)
 	{
+		// Early return if player is not found
+		if (player == null)
+		{
+			GD.PrintErr("Player is null - cannot update mutant behavior");
+			return;
+		}
+		
 		// Apply gravity
 		if (!IsOnFloor())
 		{
 			Velocity = new Vector3(Velocity.X, Velocity.Y - Gravity * (float)delta, Velocity.Z);
-			GD.Print("Mutant is falling");
 		}
 		else
 		{
@@ -51,40 +126,49 @@ public partial class Mutant : CharacterBody3D
 		
 		// Calculate distance to player
 		float distanceToPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
-		GD.Print($"Distance to player: {distanceToPlayer:F2} | Detection Range: {DetectionRange}");
 		
-		// Only chase if player is within detection range and navigation is ready
-		if (distanceToPlayer <= DetectionRange && navAgent.IsNavigationFinished() == false)
+		// Calculate distance from spawn point
+		float distanceFromSpawn = GlobalPosition.DistanceTo(spawnPosition);
+		
+		// Only chase if player is within detection range, not too close, and mutant hasn't strayed too far from spawn
+		if (distanceToPlayer <= DetectionRange && distanceToPlayer > MinDistanceToPlayer && distanceFromSpawn < MaxDistanceFromSpawn)
 		{
-			// Update the navigation target to the player's position
-			navAgent.TargetPosition = player.GlobalPosition;
-			
-			// Check if we have a valid path
-			if (navAgent.IsNavigationFinished() == false)
+			// If NavigationAgent3D exists, use it for pathfinding
+			if (navAgent != null)
 			{
-				// Get the next point in the path
-				Vector3 nextTargetPosition = navAgent.GetNextPathPosition();
+				// Update the navigation target to the player's position
+				navAgent.TargetPosition = player.GlobalPosition;
 				
-				// Calculate direction to the next point (only on XZ plane)
-				Vector3 direction = (nextTargetPosition - GlobalPosition);
+				// Check if we have a valid path and haven't reached the target
+				if (!navAgent.IsNavigationFinished())
+				{
+					// Get the next point in the path
+					Vector3 nextTargetPosition = navAgent.GetNextPathPosition();
+					
+					// Calculate direction to the next point (only on XZ plane)
+					Vector3 direction = (nextTargetPosition - GlobalPosition);
+					direction.Y = 0; // Ignore vertical difference
+					direction = direction.Normalized();
+					
+					// Set horizontal velocity
+					Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
+				}
+			}
+			else
+			{
+				// Fallback: Move directly toward player without pathfinding
+				Vector3 direction = (player.GlobalPosition - GlobalPosition);
 				direction.Y = 0; // Ignore vertical difference
 				direction = direction.Normalized();
 				
 				// Set horizontal velocity
 				Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
-				
-				GD.Print($"Chasing player - Velocity: {Velocity}");
 			}
-		}
-		else if (distanceToPlayer <= DetectionRange)
-		{
-			// Player is in range, update target even if nav isn't ready yet
-			navAgent.TargetPosition = player.GlobalPosition;
-			GD.Print("Player in range, waiting for navigation...");
 		}
 		else
 		{
-			GD.Print("Player out of range");
+			// Stop horizontal movement when player is out of range or too close
+			Velocity = new Vector3(0, Velocity.Y, 0);
 		}
 		
 		// Move the mutant

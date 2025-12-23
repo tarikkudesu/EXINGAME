@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=4 uid="uid://k0g8l20jpn5l"]
+[gd_scene load_steps=31 format=4 uid="uid://k0g8l20jpn5l"]
 
 [ext_resource type="Material" uid="uid://ntptsm338blc" path="res://Materials/Brick_023.tres" id="1_0udfd"]
 [ext_resource type="Material" uid="uid://j7782yfgmq8m" path="res://Materials/Brick_069.tres" id="2_buung"]
@@ -17,7 +17,6 @@
 [ext_resource type="Script" path="res://Scripts/Stats.cs" id="10_6u0gq"]
 [ext_resource type="PackedScene" uid="uid://de0m4efhg3n52" path="res://Scenes/Tools/csg_ref.tscn" id="10_pi8do"]
 [ext_resource type="PackedScene" uid="uid://ddp62lqxgj3c2" path="res://Scenes/PlayerController/Player.tscn" id="14_qv7ho"]
-[ext_resource type="PackedScene" uid="uid://bry7xhw3qmi0w" path="res://Scenes/stage.tscn" id="15_eaebw"]
 [ext_resource type="PackedScene" uid="uid://bqekf67x42h0i" path="res://Models/Windmill/wind_mill.tscn" id="19_l7anu"]
 [ext_resource type="PackedScene" uid="uid://c3n5ryfjyi3h1" path="res://Models/TubeLight/tube_light.tscn" id="20_gox77"]
 
@@ -25,17 +24,15 @@
 background_mode = 2
 background_energy_multiplier = 1.48
 sky = ExtResource("2_fb8vh")
-sky_rotation = Vector3(0, 3.36989, 0)
+sky_rotation = Vector3(0, 0.0109555, 0)
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 2
+tonemap_exposure = 2.2
 tonemap_white = 4.18
-ssr_enabled = true
 ssr_fade_out = 2.21914
-ssao_enabled = true
 ssao_radius = 0.79
 ssao_intensity = 3.5
-ssil_enabled = true
 sdfgi_use_occlusion = true
 sdfgi_bounce_feedback = 1.62
 sdfgi_min_cell_size = 0.4
@@ -51,7 +48,6 @@ glow_hdr_scale = 2.5
 glow_hdr_luminance_cap = 5.04
 glow_map_strength = 0.45
 fog_sky_affect = 0.05
-volumetric_fog_enabled = true
 volumetric_fog_density = 0.0041
 volumetric_fog_emission_energy = 0.0
 volumetric_fog_anisotropy = 0.18
@@ -80,6 +76,15 @@ font_names = PackedStringArray("Evil Empire")
 font = SubResource("SystemFont_36c0q")
 font_size = 45
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_erx4m"]
+size = Vector3(20.0035, 9.3999, 1)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_dgldw"]
+vertices = PackedVector3Array(-9.39896, 10.9673, -9.47983, -9.39896, 10.9673, 9.52017, 9.60104, 10.9673, 9.52017, 9.60104, 10.9673, -9.47983)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+agent_height = 0.0
+agent_max_slope = 60.0
 
 [sub_resource type="SystemFont" id="SystemFont_ynpba"]
 font_names = PackedStringArray("Jersey M54")
@@ -185,12 +190,208 @@ uppercase = true
 
 [node name="Stage" type="Node3D" parent="."]
 
-[node name="Mutant" parent="Stage" instance=ExtResource("5_16t13")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -24.0646, 1.50418, -56.8479)
+[node name="Node3D5" type="Node3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.69, -8.91077, -54.3436)
+
+[node name="ConcreteCSGBox3D" type="CSGBox3D" parent="Stage/Node3D5" groups=["Concrete"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6954, 0)
+material_override = ExtResource("1_0udfd")
+use_collision = true
+collision_layer = 2
+size = Vector3(20, 9.54382, 20)
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage/Node3D5" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101038, 10.0173, 10.5202)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(20, 1, 1)
+
+[node name="Area3D" type="Area3D" parent="Stage/Node3D5/MetalCSGBox3D3"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stage/Node3D5/MetalCSGBox3D3/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00619518, 4.19995, 0)
+shape = SubResource("BoxShape3D_erx4m")
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage/Node3D5" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101038, 10.0173, -10.4798)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(20, 1, 1)
+
+[node name="Area3D" type="Area3D" parent="Stage/Node3D5/MetalCSGBox3D4"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stage/Node3D5/MetalCSGBox3D4/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00619518, 4.19995, 0)
+shape = SubResource("BoxShape3D_erx4m")
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage/Node3D5" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -10.399, 10.0173, -0.0298274)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(20, 1, 1)
+
+[node name="Area3D" type="Area3D" parent="Stage/Node3D5/MetalCSGBox3D5"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stage/Node3D5/MetalCSGBox3D5/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00619518, 4.19995, 0)
+shape = SubResource("BoxShape3D_erx4m")
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage/Node3D5" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 10.601, 10.0173, -0.0298284)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(20, 1, 1)
+
+[node name="Area3D" type="Area3D" parent="Stage/Node3D5/MetalCSGBox3D6"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stage/Node3D5/MetalCSGBox3D6/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00619518, 4.19995, 0)
+shape = SubResource("BoxShape3D_erx4m")
+
+[node name="Steps" type="Node3D" parent="Stage/Node3D5"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8.5, 10.9004, -6.85127)
+
+[node name="StepCSGBox3D" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 10
+size = Vector3(5, 0.5, 1)
+
+[node name="StepCSGBox3D2" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 10
+size = Vector3(5, 0.5, 1)
+
+[node name="StepCSGBox3D3" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 10
+size = Vector3(5, 0.5, 1)
+
+[node name="StepCSGBox3D4" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 10
+size = Vector3(5, 0.5, 1)
+
+[node name="MetalCSGBox3D9" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.00893784, 1.53563, -4.50004)
+material_override = ExtResource("4_ltx8g")
+use_collision = true
+collision_layer = 2
+size = Vector3(2, 0.35, 4.9)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, -1)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 0.5, 0.2)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, -1.00001)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 0.5, 0.2)
+
+[node name="MetalCSGBox3D7" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0.25, -2)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1, 0.2)
+
+[node name="MetalCSGBox3D8" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0.25, -2.00001)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1, 0.2)
+
+[node name="MetalCSGBox3D10" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0.5, -3)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1.5, 0.2)
+
+[node name="MetalCSGBox3D11" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0.5, -3.00001)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1.5, 0.2)
+
+[node name="MetalCSGBox3D12" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0.5, -5.25)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1.75, 0.2)
+
+[node name="MetalCSGBox3D13" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0.5, -5.25001)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1.75, 0.2)
+
+[node name="MetalCSGBox3D14" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0.5, -4)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1.75, 0.2)
+
+[node name="MetalCSGBox3D15" type="CSGBox3D" parent="Stage/Node3D5/Steps" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0.5, -4.00001)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+size = Vector3(0.15, 1.75, 0.2)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage/Node3D5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.400314, 0)
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage/Node3D5" groups=["Concrete"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101038, 9.9673, 0.0201721)
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(20, 1, 20)
+
+[node name="Mutant" parent="Stage/Node3D5" instance=ExtResource("5_16t13")]
+transform = Transform3D(0.0258644, 0, 1.49978, 0, 1.5, 0, -1.49978, 0, 0.0258644, -0.179052, 10.8547, -0.314484)
 collision_layer = 3
 collision_mask = 3
-PlayerNodePath = NodePath("../../Player")
+PlayerNodePath = NodePath("../../../Player")
+NavigationAgentPath = NodePath("../NavigationRegion3D")
 DetectionRange = 20.0
+MinDistanceToPlayer = 2.0
+MaxDistanceFromSpawn = 10.0
+Speed = 1.5
 
 [node name="Node3D" type="Node3D" parent="Stage"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.39896, -50.5, 0.979828)
@@ -1181,9 +1382,6 @@ material_override = ExtResource("3_kljmn")
 use_collision = true
 collision_layer = 2
 size = Vector3(20, 1, 1)
-
-[node name="Node3D5" parent="Stage" instance=ExtResource("15_eaebw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.69, -8.91077, -54.3436)
 
 [node name="Node3D4" type="Node3D" parent="Stage"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.39896, -52, -25.0202)
