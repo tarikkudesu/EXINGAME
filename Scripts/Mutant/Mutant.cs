@@ -1,99 +1,93 @@
 using Godot;
 using System;
 
-public partial class Mutant : Node3D
+public partial class Mutant : CharacterBody3D
 {
-	private AnimationPlayer _animationPlayer;
-	private Timer _stretchTimer;
-	private bool _isStretching = false;
+	[Export]
+	public NodePath PlayerNodePath { get; set; }
 	
-	// Animation names
-	private const string ANIM_IDLE = "Swiping";  // Looping idle animation
-	private const string ANIM_STRETCH = "Stretch";  // Plays every 5 seconds
+	[Export]
+	public float DetectionRange = 10.0f;
+	
+	[Export]
+	public float Gravity = 9.8f;
+	
+	private CharacterBody3D player;
+	private NavigationAgent3D navAgent;
+	private const float Speed = 5.0f;
 	
 	public override void _Ready()
 	{
-		_animationPlayer = GetNode<AnimationPlayer>("Stretch");
+		// Get the player node using the exported path
+		player = GetNode<CharacterBody3D>(PlayerNodePath);
 		
-		if (_animationPlayer == null)
-		{
-			GD.PrintErr("AnimationPlayer not found for Mutant!");
-			return;
-		}
+		// Get the NavigationAgent3D child node
+		navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
 		
-		// List available animations for debugging
-		var animations = _animationPlayer.GetAnimationList();
-		GD.Print($"Available Mutant animations: {string.Join(", ", animations)}");
-		
-		// Start with Idle animation looping
-		PlayIdleAnimation();
-		
-		// Setup timer for stretch animation every 5 seconds
-		_stretchTimer = new Timer();
-		AddChild(_stretchTimer);
-		_stretchTimer.WaitTime = 5.0;
-		_stretchTimer.Timeout += OnStretchTimerTimeout;
-		_stretchTimer.Start();
-		
-		// Connect to animation finished signal to return to idle after stretch
-		_animationPlayer.AnimationFinished += OnAnimationFinished;
+		// Wait for navigation to be ready (important for first frame)
+		CallDeferred(MethodName.SetupNavigation);
 	}
 	
-	private void PlayIdleAnimation()
+	private void SetupNavigation()
 	{
-		if (_animationPlayer.HasAnimation(ANIM_IDLE))
-		{
-			_animationPlayer.Play(ANIM_IDLE);
-			GD.Print("Playing Idle animation");
-		}
+		// Set initial target to player position
+		navAgent.TargetPosition = player.GlobalPosition;
+		GD.Print("Navigation setup complete");
 	}
 	
-	private void OnStretchTimerTimeout()
+	public override void _PhysicsProcess(double delta)
 	{
-		// Play stretch animation
-		if (_animationPlayer.HasAnimation(ANIM_STRETCH) && !_isStretching)
+		// Apply gravity
+		if (!IsOnFloor())
 		{
-			_isStretching = true;
-			_animationPlayer.Play(ANIM_STRETCH);
-			GD.Print("Playing Stretch animation");
+			Velocity = new Vector3(Velocity.X, Velocity.Y - Gravity * (float)delta, Velocity.Z);
+			GD.Print("Mutant is falling");
 		}
-	}
-	
-	private void OnAnimationFinished(StringName animName)
-	{
-		// When stretch finishes, return to idle
-		if (animName == ANIM_STRETCH)
+		else
 		{
-			_isStretching = false;
-			PlayIdleAnimation();
+			// Reset vertical velocity when on floor
+			Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
 		}
-	}
-	
-	private AnimationPlayer FindAnimationPlayer(Node node)
-	{
-		if (node is AnimationPlayer player)
-			return player;
+		
+		// Calculate distance to player
+		float distanceToPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
+		GD.Print($"Distance to player: {distanceToPlayer:F2} | Detection Range: {DetectionRange}");
+		
+		// Only chase if player is within detection range and navigation is ready
+		if (distanceToPlayer <= DetectionRange && navAgent.IsNavigationFinished() == false)
+		{
+			// Update the navigation target to the player's position
+			navAgent.TargetPosition = player.GlobalPosition;
 			
-		foreach (Node child in node.GetChildren())
-		{
-			var result = FindAnimationPlayer(child);
-			if (result != null)
-				return result;
+			// Check if we have a valid path
+			if (navAgent.IsNavigationFinished() == false)
+			{
+				// Get the next point in the path
+				Vector3 nextTargetPosition = navAgent.GetNextPathPosition();
+				
+				// Calculate direction to the next point (only on XZ plane)
+				Vector3 direction = (nextTargetPosition - GlobalPosition);
+				direction.Y = 0; // Ignore vertical difference
+				direction = direction.Normalized();
+				
+				// Set horizontal velocity
+				Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
+				
+				GD.Print($"Chasing player - Velocity: {Velocity}");
+			}
 		}
-		return null;
-	}
-	
-	public override void _ExitTree()
-	{
-		// Cleanup
-		if (_animationPlayer != null)
+		else if (distanceToPlayer <= DetectionRange)
 		{
-			_animationPlayer.AnimationFinished -= OnAnimationFinished;
+			// Player is in range, update target even if nav isn't ready yet
+			navAgent.TargetPosition = player.GlobalPosition;
+			GD.Print("Player in range, waiting for navigation...");
+		}
+		else
+		{
+			GD.Print("Player out of range");
 		}
 		
-		if (_stretchTimer != null)
-		{
-			_stretchTimer.Timeout -= OnStretchTimerTimeout;
-		}
+		// Move the mutant
+		MoveAndSlide();
 	}
 }
