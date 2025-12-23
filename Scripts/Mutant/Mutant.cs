@@ -24,30 +24,29 @@ public partial class Mutant : CharacterBody3D
 	[Export]
 	public float Speed = 5.0f;
 	
+	[Export]
+	public float AttackRange = 3.0f;
+	
 	private CharacterBody3D player;
 	private NavigationAgent3D navAgent;
+	private AnimationTree animationTree;
 	private Vector3 spawnPosition;
+	private bool useSwipe = true; // Alternate between swipe and punch
+	private float attackTimer = 0.0f;
+	private float attackCooldown = 1.5f; // Time between attacks
 	
 	public override void _Ready()
 	{
-		GD.Print("=== Mutant _Ready() called ===");
-		
 		// Store the spawn position
 		spawnPosition = GlobalPosition;
-		GD.Print($"Spawn position: {spawnPosition}");
 		
 		// Get the player node using the exported path
-		GD.Print($"PlayerNodePath: {PlayerNodePath}");
 		if (PlayerNodePath != null && !PlayerNodePath.IsEmpty)
 		{
 			player = GetNode<CharacterBody3D>(PlayerNodePath);
 			if (player == null)
 			{
 				GD.PrintErr("Player node not found at path: " + PlayerNodePath);
-			}
-			else
-			{
-				GD.Print("Player node found successfully");
 			}
 		}
 		else
@@ -56,33 +55,29 @@ public partial class Mutant : CharacterBody3D
 		}
 		
 		// Get the NavigationAgent3D using the exported path
-		GD.Print($"NavigationAgentPath: {NavigationAgentPath}");
 		if (NavigationAgentPath != null && !NavigationAgentPath.IsEmpty)
 		{
-			GD.Print("Attempting to get NavigationAgent3D...");
 			try
 			{
-				navAgent = GetNode<NavigationAgent3D>(NavigationAgentPath);
-				GD.Print("GetNode call completed");
+				var node = GetNode(NavigationAgentPath);
+				navAgent = node as NavigationAgent3D;
+				
 				if (navAgent == null)
 				{
-					GD.PrintErr("NavigationAgent3D not found at path: " + NavigationAgentPath);
-				}
-				else
-				{
-					GD.Print("NavigationAgent3D found successfully");
+					GD.PrintErr($"NavigationAgentPath points to a {node.GetType().Name}, not a NavigationAgent3D!");
 				}
 			}
 			catch (Exception ex)
 			{
 				GD.PrintErr($"Error getting NavigationAgent3D: {ex.Message}");
-				GD.PrintErr($"Exception type: {ex.GetType().Name}");
-				GD.PrintErr($"Stack trace: {ex.StackTrace}");
 			}
 		}
-		else
+		
+		// Get the AnimationTree child node
+		animationTree = GetNodeOrNull<AnimationTree>("AnimationTree");
+		if (animationTree == null)
 		{
-			GD.PrintErr("NavigationAgentPath is not set! Mutant will use direct movement.");
+			GD.PrintErr("AnimationTree not found as child of Mutant!");
 		}
 		
 		// Wait for navigation to be ready (important for first frame)
@@ -90,17 +85,13 @@ public partial class Mutant : CharacterBody3D
 		{
 			CallDeferred(MethodName.SetupNavigation);
 		}
-		
-		GD.Print("=== Mutant _Ready() complete ===");
 	}
 	
 	private void SetupNavigation()
 	{
 		if (player != null && navAgent != null)
 		{
-			// Set initial target to player position
 			navAgent.TargetPosition = player.GlobalPosition;
-			GD.Print("Navigation setup complete");
 		}
 	}
 	
@@ -109,7 +100,6 @@ public partial class Mutant : CharacterBody3D
 		// Early return if player is not found
 		if (player == null)
 		{
-			GD.PrintErr("Player is null - cannot update mutant behavior");
 			return;
 		}
 		
@@ -130,8 +120,18 @@ public partial class Mutant : CharacterBody3D
 		// Calculate distance from spawn point
 		float distanceFromSpawn = GlobalPosition.DistanceTo(spawnPosition);
 		
-		// Only chase if player is within detection range, not too close, and mutant hasn't strayed too far from spawn
-		if (distanceToPlayer <= DetectionRange && distanceToPlayer > MinDistanceToPlayer && distanceFromSpawn < MaxDistanceFromSpawn)
+		// Check if player is in attack range
+		bool inAttackRange = distanceToPlayer <= AttackRange;
+		
+		// Rotate to face the player when in detection range
+		if (distanceToPlayer <= DetectionRange)
+		{
+			Vector3 lookTarget = new Vector3(player.GlobalPosition.X, GlobalPosition.Y, player.GlobalPosition.Z);
+			LookAt(lookTarget, Vector3.Up);
+		}
+		
+		// Only chase if player is within detection range, not in attack range, and mutant hasn't strayed too far from spawn
+		if (distanceToPlayer <= DetectionRange && !inAttackRange && distanceToPlayer > MinDistanceToPlayer && distanceFromSpawn < MaxDistanceFromSpawn)
 		{
 			// If NavigationAgent3D exists, use it for pathfinding
 			if (navAgent != null)
@@ -153,6 +153,11 @@ public partial class Mutant : CharacterBody3D
 					// Set horizontal velocity
 					Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
 				}
+				else
+				{
+					// Stop if navigation finished
+					Velocity = new Vector3(0, Velocity.Y, 0);
+				}
 			}
 			else
 			{
@@ -167,11 +172,67 @@ public partial class Mutant : CharacterBody3D
 		}
 		else
 		{
-			// Stop horizontal movement when player is out of range or too close
+			// Stop horizontal movement when player is out of range, too close, or mutant is too far from spawn
 			Velocity = new Vector3(0, Velocity.Y, 0);
 		}
 		
 		// Move the mutant
 		MoveAndSlide();
+		
+		// Update animation tree conditions
+		UpdateAnimationTree();
+	}
+	
+	private bool IsTargetInRange()
+	{
+		if (player == null)
+			return false;
+			
+		float distanceToPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
+		return distanceToPlayer <= AttackRange;
+	}
+	
+	private void UpdateAnimationTree()
+	{
+		if (animationTree == null)
+			return;
+		
+		bool isRunning = Velocity.Length() > 0.1f; // Check if mutant is moving
+		bool inAttackRange = IsTargetInRange();
+		
+		// Set run condition (only run when moving and not attacking)
+		animationTree.Set("parameters/conditions/run", isRunning && !inAttackRange);
+		
+		// Set stretch condition to return to idle when not running and not attacking
+		animationTree.Set("parameters/conditions/stretch", !isRunning && !inAttackRange);
+		
+		// Handle attack animations with cooldown
+		if (inAttackRange)
+		{
+			// Increment attack timer
+			attackTimer += (float)GetPhysicsProcessDeltaTime();
+			
+			// Trigger attack when cooldown is ready
+			if (attackTimer >= attackCooldown)
+			{
+				if (useSwipe)
+				{
+					animationTree.Set("parameters/conditions/swipe", true);
+				}
+				else
+				{
+					animationTree.Set("parameters/conditions/punch", true);
+				}
+				
+				// Toggle for next attack and reset timer
+				useSwipe = !useSwipe;
+				attackTimer = 0.0f;
+			}
+		}
+		else
+		{
+			// Reset attack timer when not in range
+			attackTimer = 0.0f;
+		}
 	}
 }

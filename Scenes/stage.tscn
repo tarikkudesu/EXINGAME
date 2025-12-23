@@ -1074,7 +1074,7 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7pd6a"]
-radius = 0.424199
+radius = 0.372348
 height = 1.5093
 
 [node name="Node3D5" type="Node3D"]
