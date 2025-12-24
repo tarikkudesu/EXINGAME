@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>View Rewards - SciFi Interface</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#25f4c0",
+                        "primary-dim": "#1a8f72",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#050b0e", /* Deepened for more contrast */
+                        "surface-dark": "#0f1a1d",
+                        "glass": "rgba(16, 34, 30, 0.65)"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #1f2937 1px, transparent 1px), linear-gradient(to bottom, #1f2937 1px, transparent 1px)",
+                    },
+                    boxShadow: {
+                        'neon': '0 0 10px rgba(37, 244, 192, 0.5), 0 0 20px rgba(37, 244, 192, 0.3)',
+                        'neon-sm': '0 0 5px rgba(37, 244, 192, 0.5)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for sci-fi feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050b0e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1a8f72;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #25f4c0;
+        }
+
+        /* Scanline animation effect */
+        .scanlines {
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0),
+                    rgba(255, 255, 255, 0) 50%,
+                    rgba(0, 0, 0, 0.1) 50%,
+                    rgba(0, 0, 0, 0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(37, 244, 192, 0.7);
+        }
+
+        .hologram-card {
+            background: linear-gradient(135deg, rgba(37, 244, 192, 0.05) 0%, rgba(16, 34, 30, 0.8) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 244, 192, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .hologram-card:hover {
+            border-color: rgba(37, 244, 192, 0.6);
+            box-shadow: 0 0 20px rgba(37, 244, 192, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .clip-corner {
+            clip-path: polygon(0 0,
+                    100% 0,
+                    100% calc(100% - 12px),
+                    calc(100% - 12px) 100%,
+                    0 100%);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-dark text-white font-display overflow-hidden selection:bg-primary selection:text-background-dark">
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-0 select-none pointer-events-none">
+        <!-- Main Atmospheric Image -->
+        <div class="absolute inset-0 bg-center bg-cover opacity-40 mix-blend-overlay"
+            data-alt="Dark stormy rain heavy cyberpunk city street night reflection"
+            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8pbYYxflxcs5ebrxMspCk7hiTHwHxmmV9-jF1s37z5OpB53lkfA94vygEWINjRGQzPt9zDj3AMAolvHPFmdPlz41fIwIYTY35mRRC_aXBlMeq5N0GPlCMDVFFJoDdqL45W7_8gkhJmaZeeZJlVEg4Yyj8FKJqWyHrcrdXNF7BsdO33sKv__CqkhgqvhmwW6o_Zu_MsHxKs-TMkwD8eLOsj7GaKoMMv_Hymx1QAWYKf6yWk44jiZDdB2kWX1EhuvA3h42zAcxAtx0");'>
+        </div>
+        <!-- Gradient Overlays for Readability -->
+        <div class="absolute inset-0 bg-gradient-to-r from-background-dark via-background-dark/90 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+        <!-- Scanlines -->
+        <div class="absolute inset-0 scanlines opacity-30"></div>
+        <!-- Decorative Grid -->
+        <div
+            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgNDBoNDBWMEgwdi4yaDQwdjM5LjhIMHoiIGZpbGw9IiMzNzQxNTEiIGZpbGwtb3BhY2l0eT0iLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjYSkiLz48L3N2Zz4=')] opacity-20">
+        </div>
+    </div>
+    <!-- Main Layout -->
+    <div class="relative z-10 flex h-screen w-full overflow-hidden">
+        <!-- SIDEBAR -->
+        <aside
+            class="hidden md:flex flex-col w-80 h-full border-r border-white/10 bg-background-dark/60 backdrop-blur-xl relative">
+            <!-- Top: Profile -->
+            <div class="p-6 border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <div class="size-12 rounded-full bg-cover bg-center border border-primary/50"
+                            data-alt="Futuristic soldier profile avatar scan"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBI2EBTHT6nf5gib-YGfgqWNzYT_SYvlawWjh01llxDQ347T2M_JTlvi5Y5mzAFRZUNAjFBDP87AsQPqPH6GUvZJ-GScGZMa1wbAmTQEm8yPT3wEctvTH2BRxG43sZ2ZTdULEJ-ovxgbTEF-9Sm6K8tik4-NtCV57lyfG32P7ySI8sBotWcnBngoU0NKdQ-HNCMH5pe28f_U90XN-Z_ZUzYv93SiAn9TCybPNCwiGp6yUih3__a4GmDR246VziWYNX-SbNhrHKyBCI");'>
+                        </div>
+                        <div
+                            class="absolute -bottom-1 -right-1 size-3 bg-primary rounded-full shadow-neon-sm border-2 border-background-dark">
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 class="text-white text-sm font-bold tracking-widest">OP-902</h2>
+                        <p class="text-primary text-xs font-mono">STATUS: ONLINE</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Middle: Nav Links -->
+            <nav class="flex-1 flex flex-col gap-2 p-4 overflow-y-auto">
+                <a class="group flex items-center gap-4 px-4 py-3 rounded hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-white/20"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors">table_chart</span>
+                    <span
+                        class="text-gray-400 text-sm font-medium tracking-wide group-hover:text-white transition-colors uppercase">Overview</span>
+                </a>
+                <a class="group flex items-center gap-4 px-4 py-3 rounded bg-primary/10 border-l-2 border-primary relative overflow-hidden"
+                    href="#">
+                    <div class="absolute inset-0 bg-primary/5 blur-lg"></div>
+                    <span class="material-symbols-outlined text-primary relative z-10"
+                        style="font-variation-settings: 'FILL' 1;">redeem</span>
+                    <span
+                        class="text-white text-sm font-bold tracking-wide relative z-10 uppercase text-glow">Rewards</span>
+                    <span class="absolute right-4 size-2 rounded-full bg-primary shadow-neon-sm animate-pulse"></span>
+                </a>
+                <a class="group flex items-center gap-4 px-4 py-3 rounded hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-white/20"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors">inventory_2</span>
+                    <span
+                        class="text-gray-400 text-sm font-medium tracking-wide group-hover:text-white transition-colors uppercase">Inventory</span>
+                </a>
+                <a class="group flex items-center gap-4 px-4 py-3 rounded hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-white/20"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors">map</span>
+                    <span
+                        class="text-gray-400 text-sm font-medium tracking-wide group-hover:text-white transition-colors uppercase">Map
+                        Data</span>
+                </a>
+            </nav>
+            <!-- Bottom: System Exit -->
+            <div class="p-6 border-t border-white/5 mt-auto">
+                <a class="group flex items-center gap-4 px-4 py-3 rounded hover:bg-red-500/10 transition-colors border-l-2 border-transparent hover:border-red-500"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined text-gray-500 group-hover:text-red-400 transition-colors">power_settings_new</span>
+                    <span
+                        class="text-gray-500 text-sm font-medium tracking-wide group-hover:text-red-400 transition-colors uppercase">System
+                        Exit</span>
+                </a>
+            </div>
+            <!-- Decorative Sidebar Elements -->
+            <div class="absolute top-0 right-0 w-px h-16 bg-gradient-to-b from-primary/50 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-px h-16 bg-gradient-to-t from-primary/50 to-transparent"></div>
+        </aside>
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 flex flex-col relative overflow-hidden">
+            <!-- Top Meta Bar -->
+            <header
+                class="flex-none px-8 py-6 md:px-12 pt-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 z-20">
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2 text-primary/60 text-xs font-mono tracking-[0.2em]">
+                        <span class="material-symbols-outlined text-[16px]">satellite_alt</span>
+                        <span>MISSION COMPLETE // SECTOR 07</span>
+                    </div>
+                    <h1
+                        class="text-5xl md:text-6xl font-black text-white uppercase tracking-tight leading-none mt-2 relative">
+                        View Rewards
+                        <span
+                            class="text-primary text-6xl absolute -top-1 left-0.5 opacity-30 mix-blend-overlay blur-[1px]">View
+                            Rewards</span>
+                    </h1>
+                    <p
+                        class="text-gray-400 text-sm md:text-base font-normal max-w-lg mt-2 border-l border-primary/30 pl-3">
+                        Combat analysis complete. 4 new skill vectors identified. Assimilation ready.
+                    </p>
+                </div>
+                <!-- Weather/Env Status -->
+                <div
+                    class="hidden md:flex items-center gap-6 border border-white/10 bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400 text-sm">water_drop</span>
+                        <span class="text-xs text-gray-300 font-mono">RAIN_HEAVY</span>
+                    </div>
+                    <div class="w-px h-4 bg-white/20"></div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400 text-sm">wifi</span>
+                        <span class="text-xs text-primary font-mono animate-pulse">UPLINK_STABLE</span>
+                    </div>
+                </div>
+            </header>
+            <!-- Content Area: Cards -->
+            <div class="flex-1 overflow-y-auto overflow-x-hidden p-6 md:p-12 z-20 custom-scrollbar relative">
+                <!-- Decorative Holographic Rings (Background) -->
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-primary/5 rounded-full pointer-events-none animate-[spin_60s_linear_infinite]">
+                </div>
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-dashed border-primary/10 rounded-full pointer-events-none animate-[spin_40s_linear_infinite_reverse]">
+                </div>
+                <!-- Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-full items-center">
+                    <!-- Card 1 -->
+                    <div class="hologram-card group rounded-xl p-1 flex flex-col h-[420px] relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <!-- Card Image -->
+                        <div class="relative h-48 w-full rounded-lg overflow-hidden mb-4 bg-black">
+                            <img class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
+                                data-alt="Abstract digital neural network nodes glowing blue"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgQFv_QjhHXny2yZD1ifSfPSMS5sxNE5oW4gdAOkJbaoF4vM7rcJDP4MFzK2lO-RuE-RVye9XOwbZqqwPq6Xfu8Cn_icET6f4VZqS5MlBpZg8LVNp6nC05wIsvBmp2VGomRL2udKOOkZ36AM9zlCt3ik9aDsF9o5EpU50f5qCzlLVrvw0rIEjCdrQrRfuITHcoxGINDYK-AvRRWzF5Uv2Edq99hRDzN-CJnLqGQdhUjCIwItwaGHUttizB51pobF7cam0IfXZE-mE" />
+                            <div
+                                class="absolute bottom-2 left-2 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] font-mono text-primary border border-primary/20">
+                                L.REASONING
+                            </div>
+                        </div>
+                        <!-- Card Content -->
+                        <div class="flex-1 flex flex-col px-3 pb-3">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3
+                                    class="text-xl font-bold text-white leading-tight group-hover:text-primary transition-colors">
+                                    Logical Reasoning</h3>
+                                <span class="material-symbols-outlined text-primary/50 text-xl">psychology</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-xs text-gray-400 font-mono">LEVEL 42</span>
+                                <span class="material-symbols-outlined text-[10px] text-primary">arrow_forward</span>
+                                <span class="text-xs text-primary font-bold font-mono text-glow">LEVEL 43</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                                Neural pathways optimized. Decision making latency reduced by 14%.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="flex justify-between text-[10px] text-gray-500 font-mono mb-1 uppercase">
+                                    <span>Progress</span>
+                                    <span>98%</span>
+                                </div>
+                                <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-primary w-[98%] shadow-neon-sm"></div>
+                                </div>
+                                <div class="mt-3 py-1 px-2 bg-primary/10 border border-primary/30 rounded text-center">
+                                    <span class="text-xs font-bold text-primary uppercase tracking-wider">Level
+                                        Increased</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="hologram-card group rounded-xl p-1 flex flex-col h-[420px] relative overflow-hidden">
+                        <!-- Card Image -->
+                        <div class="relative h-48 w-full rounded-lg overflow-hidden mb-4 bg-black">
+                            <img class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
+                                data-alt="Computer screen code glowing dark room hacker"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn055pATjjM_sLxIQrfNVdRegmgnpJcwyU_ili7EYr7EruTWCgN6ElODBBz9Zqr6WfXlHsao-Hj0outjA6XJJx5QzwIrRCggjd9MArxiRqt3D4Of9wdJE-j27faJnryLG86X9lc8P58DpAJmkcIZQiSsR70wwnJ02OEMdxEritQL2IWu4yUNpAe_FpJnujP7FBLy3Bv_uU1jtc2mJ08yK-GoSp3l5U9beE45XuysZHTfmoBqM0F_jY3lk7A_y1MzeGAUBMuVeeglg" />
+                            <div
+                                class="absolute bottom-2 left-2 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] font-mono text-primary border border-primary/20">
+                                CODING
+                            </div>
+                        </div>
+                        <!-- Card Content -->
+                        <div class="flex-1 flex flex-col px-3 pb-3">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3
+                                    class="text-xl font-bold text-white leading-tight group-hover:text-primary transition-colors">
+                                    Coding Proficiency</h3>
+                                <span class="material-symbols-outlined text-primary/50 text-xl">terminal</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-xs text-gray-400 font-mono">+150 XP GAINED</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                                Advanced syntax libraries acquired. Firewall penetration speed +20%.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="flex justify-between text-[10px] text-gray-500 font-mono mb-1 uppercase">
+                                    <span>Mastery</span>
+                                    <span>Complete</span>
+                                </div>
+                                <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-primary w-full shadow-neon-sm"></div>
+                                </div>
+                                <div class="mt-3 py-1 px-2 bg-primary/10 border border-primary/30 rounded text-center">
+                                    <span class="text-xs font-bold text-primary uppercase tracking-wider">Concepts
+                                        Mastered</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="hologram-card group rounded-xl p-1 flex flex-col h-[420px] relative overflow-hidden">
+                        <!-- Card Image -->
+                        <div class="relative h-48 w-full rounded-lg overflow-hidden mb-4 bg-black">
+                            <img class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
+                                data-alt="Abstract glowing network connection global map"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk4BdN-e26NtDYOuDh51qXvAj30JtyxXfjdnfVjwdpNO2HaZR654QrUl6nqgH2pHjZOPY9Lb-mE7GeOqnhuohU87NjMp1M_SFRcw-nHB8TORwfWdb_bkICm03-mqwOAQFAy_ZgfSmFlghO1-HzOEob5x46dkhdgcl45Ztk7lAGRb3ixiLfNZvxxCNwi0yMG4mfEPOjpCUdi7dKQqBsT1S5MVtObSFi-adOKXjKRA2WvzV9kWlldeDN_zUPN1CrGqqNEduGbsejfas" />
+                            <div
+                                class="absolute bottom-2 left-2 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] font-mono text-primary border border-primary/20">
+                                LINGUISTICS
+                            </div>
+                        </div>
+                        <!-- Card Content -->
+                        <div class="flex-1 flex flex-col px-3 pb-3">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3
+                                    class="text-xl font-bold text-white leading-tight group-hover:text-primary transition-colors">
+                                    Language Mastery</h3>
+                                <span class="material-symbols-outlined text-primary/50 text-xl">translate</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-xs text-gray-400 font-mono">NEW PERK</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                                Translation module updated. Ancient dialect interpretation unlocked.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="flex justify-between text-[10px] text-gray-500 font-mono mb-1 uppercase">
+                                    <span>Progress</span>
+                                    <span>65%</span>
+                                </div>
+                                <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-primary w-[65%] shadow-neon-sm"></div>
+                                </div>
+                                <div class="mt-3 py-1 px-2 bg-primary/10 border border-primary/30 rounded text-center">
+                                    <span class="text-xs font-bold text-primary uppercase tracking-wider">Understanding
+                                        Inc.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="hologram-card group rounded-xl p-1 flex flex-col h-[420px] relative overflow-hidden">
+                        <!-- Card Image -->
+                        <div class="relative h-48 w-full rounded-lg overflow-hidden mb-4 bg-black">
+                            <img class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700 mix-blend-luminosity group-hover:mix-blend-normal"
+                                data-alt="Mathematics formulas on chalkboard glowing abstract"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA3q3Ss5qM1jK47bicxhse1_DCK7gnMEMHnm0hBYmTOPMLBQzm9_ExGxOOnVQZoGMa2RSM1wtp6ccJVeplHZk-hq3pSVgHeSOKQ8gIkW7NbEuHw8yxRhycjJCrE1Agl9zODm-1S_GnIqPKkEeyoBBpUoiWn6Kqac0YM1bSPk5-0Pi0ZkmguvGYCUlJG-Jv8LMijpQn15gWCb69TijfW6tq8SERuY3nBkx3WXAaxUxtdT-mmMT3DunregSzBpmEQvTBTszMB025k4w" />
+                            <div
+                                class="absolute bottom-2 left-2 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] font-mono text-primary border border-primary/20">
+                                MATH
+                            </div>
+                        </div>
+                        <!-- Card Content -->
+                        <div class="flex-1 flex flex-col px-3 pb-3">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3
+                                    class="text-xl font-bold text-white leading-tight group-hover:text-primary transition-colors">
+                                    Mathematics</h3>
+                                <span class="material-symbols-outlined text-primary/50 text-xl">functions</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-xs text-gray-400 font-mono">ALGO UNLOCKED</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                                Ballistic trajectory calculation now instantaneous.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="flex justify-between text-[10px] text-gray-500 font-mono mb-1 uppercase">
+                                    <span>Efficiency</span>
+                                    <span>100%</span>
+                                </div>
+                                <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-primary w-full shadow-neon-sm"></div>
+                                </div>
+                                <div class="mt-3 py-1 px-2 bg-primary/10 border border-primary/30 rounded text-center">
+                                    <span class="text-xs font-bold text-primary uppercase tracking-wider">Algorithm
+                                        Found</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom Action Area -->
+            <footer class="flex-none p-8 md:p-12 pt-0 z-30 flex justify-end items-end pointer-events-none">
+                <div class="pointer-events-auto">
+                    <!-- Tech Button Container -->
+                    <div class="relative group">
+                        <!-- Decorative corners -->
+                        <div
+                            class="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-primary opacity-50 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div
+                            class="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-primary opacity-50 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <button
+                            class="clip-corner flex cursor-pointer items-center justify-center h-14 px-8 bg-primary hover:bg-primary-dim text-background-dark gap-3 text-lg font-bold tracking-widest transition-all hover:scale-105 active:scale-95 shadow-neon">
+                            <span class="material-symbols-outlined font-bold">check_circle</span>
+                            <span>CLAIM ALL REWARDS</span>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+            <!-- Floating Particles (Simulated via divs) -->
+            <div class="absolute top-20 right-20 w-1 h-1 bg-white rounded-full animate-ping opacity-50"></div>
+            <div class="absolute bottom-40 left-10 w-1 h-1 bg-primary rounded-full animate-ping opacity-30 delay-700">
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

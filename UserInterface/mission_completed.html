@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mission Completed</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#25f4c0",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#10221e",
+                        "surface-dark": "#1a2c28",
+                    },
+                    fontFamily: { "display": ["Space Grotesk", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    backgroundImage: {
+                        'scanlines': 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2))',
+                    }
+                },
+            },
+        }
+    </script>
+
+    <style>
+        /* Glass panel effect */
+        .glass-panel {
+            background: rgba(16, 34, 30, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Metallic gradient text */
+        .text-metallic {
+            background: linear-gradient(to bottom, #ffffff 20%, #9ca3af 50%, #e5e7eb 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0px 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Green neon glow */
+        .text-glow-green {
+            text-shadow: 0 0 15px rgba(37, 244, 192, 0.6),
+                0 0 30px rgba(37, 244, 192, 0.4),
+                0 0 60px rgba(37, 244, 192, 0.2);
+        }
+
+        /* Scanline overlay */
+        .scanline-overlay {
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-x-hidden antialiased">
+
+    <div class="relative min-h-screen w-full flex flex-col">
+
+        <!-- Background -->
+        <div class="absolute inset-0 z-0">
+            <div class="w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-[20s] ease-out scale-105"
+                style='background-image: url("mission_completed_background.png");'>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#10221e]/60 via-[#10221e]/40 to-[#10221e]"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#10221e_120%)]"></div>
+            <div class="absolute inset-0 bg-scanlines scanline-overlay opacity-20"></div>
+        </div>
+
+        <!-- Content Wrapper -->
+        <div class="relative z-10 flex flex-grow flex-col items-center justify-center px-6 py-12 lg:px-8">
+            <div class="w-full max-w-4xl flex flex-col items-center gap-10">
+
+                <!-- Title Section -->
+                <div class="flex flex-col items-center text-center animate-fade-in-up">
+                    <div
+                        class="mb-4 flex items-center gap-2 text-primary/80 tracking-[0.2em] text-xs font-bold uppercase border border-primary/30 px-3 py-1 rounded-full bg-primary/10 backdrop-blur-sm">
+                        <span class="material-symbols-outlined text-[16px]">verified</span>
+                        <span>Successfully completed</span>
+                    </div>
+                    <h1
+                        class="text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tighter text-metallic text-glow-green uppercase italic transform -skew-x-6">
+                        Mission<br /><span class="text-primary/90">Completed</span>
+                    </h1>
+                    <div class="flex items-center gap-3">
+                        <div class="h-[1px] w-8 md:w-16 bg-primary/50"></div>
+                        <h2 class="text-primary text-xs md:text-sm font-bold tracking-[0.3em] uppercase glow-text">
+                            THE HUNT IS OVER
+                        </h2>
+                        <div class="h-[1px] w-8 md:w-16 bg-primary/50"></div>
+                    </div>
+                    <!-- Stats -->
+                    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-4">
+                        <!-- XP Gained -->
+                        <div
+                            class="glass-panel flex flex-col items-center justify-center p-6 rounded-xl hover:border-primary/40 transition-colors duration-300 group">
+                            <div
+                                class="flex items-center gap-2 mb-2 text-gray-400 group-hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined">military_tech</span>
+                                <span class="text-xs font-bold tracking-widest uppercase">XP Gained</span>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-3xl font-bold text-white tracking-tight">2,500</span>
+                                <span class="text-sm font-bold text-primary">+15%</span>
+                            </div>
+                        </div>
+                        <!-- Time Elapsed -->
+                        <div
+                            class="glass-panel flex flex-col items-center justify-center p-6 rounded-xl hover:border-primary/40 transition-colors duration-300 group">
+                            <div
+                                class="flex items-center gap-2 mb-2 text-gray-400 group-hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined">timer</span>
+                                <span class="text-xs font-bold tracking-widest uppercase">Time Elapsed</span>
+                            </div>
+                            <span class="text-3xl font-bold text-white tracking-tight">14:22</span>
+                        </div>
+                        <!-- Loot Rarity -->
+                        <div
+                            class="glass-panel flex flex-col items-center justify-center p-6 rounded-xl hover:border-primary/40 transition-colors duration-300 group">
+                            <div
+                                class="flex items-center gap-2 mb-2 text-gray-400 group-hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined">diamond</span>
+                                <span class="text-xs font-bold tracking-widest uppercase">Loot Rarity</span>
+                            </div>
+                            <span
+                                class="text-3xl font-bold text-[#f4c025] tracking-tight drop-shadow-md">LEGENDARY</span>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-col gap-4 w-full max-w-sm mt-8">
+                        <!-- Continue -->
+                        <button
+                            class="group relative flex items-center justify-between w-full h-14 px-6 bg-primary hover:bg-[#1ee3b0] text-background-dark text-lg font-bold uppercase tracking-wider rounded-lg transition-all duration-200 shadow-[0_0_15px_rgba(37,244,192,0.4)] hover:shadow-[0_0_25px_rgba(37,244,192,0.6)] overflow-hidden">
+                            <span class="z-10 flex items-center gap-3">
+                                <span class="material-symbols-outlined">play_arrow</span>
+                                Continue
+                            </span>
+                            <div
+                                class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 ease-in-out skew-x-12">
+                            </div>
+                        </button>
+
+                        <!-- View Rewards -->
+                        <button
+                            class="group relative flex items-center justify-between w-full h-14 px-6 bg-surface-dark/40 border border-white/10 hover:border-primary/50 text-white hover:text-primary text-base font-semibold uppercase tracking-wide rounded-lg backdrop-blur-md transition-all duration-200">
+                            <span class="flex items-center gap-3">
+                                <span
+                                    class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">trophy</span>
+                                View Rewards
+                            </span>
+                            <span
+                                class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity text-sm transform translate-x-2 group-hover:translate-x-0">arrow_forward</span>
+                        </button>
+
+                        <!-- Return to Base -->
+                        <button
+                            class="group relative flex items-center justify-between w-full h-14 px-6 bg-surface-dark/40 border border-white/10 hover:border-red-400/50 text-white hover:text-red-400 text-base font-semibold uppercase tracking-wide rounded-lg backdrop-blur-md transition-all duration-200">
+                            <span class="flex items-center gap-3">
+                                <span
+                                    class="material-symbols-outlined text-gray-400 group-hover:text-red-400 transition-colors">gite</span>
+                                Return to Base
+                            </span>
+                            <span
+                                class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity text-sm transform translate-x-2 group-hover:translate-x-0">logout</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+</body>
+
+</html>

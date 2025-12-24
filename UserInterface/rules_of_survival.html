@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Rules of Survival - Tactical OS</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Theme Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#25f4c0",
+            "primary-dim": "rgba(37, 244, 192, 0.1)",
+            "background-light": "#f5f8f8",
+            "background-dark": "#0a1412",
+            "surface-dark": "#10221e",
+            "glass": "rgba(16, 34, 30, 0.65)",
+          },
+          fontFamily: {
+            "display": ["Space Grotesk", "sans-serif"],
+            "body": ["Noto Sans", "sans-serif"],
+          },
+          boxShadow: {
+            'neon': '0 0 10px rgba(37, 244, 192, 0.5), 0 0 20px rgba(37, 244, 192, 0.3)',
+            'neon-sm': '0 0 5px rgba(37, 244, 192, 0.5)',
+          },
+          backgroundImage: {
+            'scan-lines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar for sleek look */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #10221e;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #22493f;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #25f4c0;
+    }
+
+    /* Scanline animation */
+    @keyframes scanline {
+      0% {
+        transform: translateY(-100%);
+      }
+
+      100% {
+        transform: translateY(100%);
+      }
+    }
+
+    .scan-overlay::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      z-index: 2;
+      background-size: 100% 2px, 3px 100%;
+      pointer-events: none;
+    }
+
+    .animate-scan::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: rgba(37, 244, 192, 0.2);
+      box-shadow: 0 0 10px rgba(37, 244, 192, 0.5);
+      animation: scanline 4s linear infinite;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* Glassmorphism utilities */
+    .glass-panel {
+      background: rgba(11, 23, 20, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(37, 244, 192, 0.15);
+    }
+
+    .glass-panel-light {
+      background: rgba(37, 244, 192, 0.05);
+      border: 1px solid rgba(37, 244, 192, 0.3);
+    }
+
+    /* Targeting Reticle Animation */
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .reticle-ring {
+      animation: pulse-ring 2s infinite;
+    }
+  </style>
+</head>
+
+<body class="font-display bg-background-dark text-white overflow-hidden h-screen w-full relative">
+  <!-- Background Image Layer -->
+  <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-60"
+    data-alt="Dark stormy sci-fi landscape with a large mechanical monster silhouette in rain"
+    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC0HdK44DvNl3dw1Ngsj0rmdKAXKbwu9H7n0Z3QEKQ_a0u0qliWYk2dSdLQAC9urwiI1hOjmgWhNuRfxcVHx4SzYD-eq3u4w19nAyqQw3j7cyaohqpSehytjVduWKBSasH_tDieww7ODQMLEpEhbNO6NeMIIH5lToA0vZUut5MlZDwYc7Dj4ppcktpsMOB1IL5cvagEd66Y2Ye1NwFMsyPEPo53yAV5kl4CtxBgB0YxjCtem3UcBGwtwr3pubXFxuMGaL88OuS5GDo");'>
+  </div>
+  <!-- Vignette & Tint Overlay -->
+  <div
+    class="absolute inset-0 z-0 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent pointer-events-none">
+  </div>
+  <div class="absolute inset-0 z-0 bg-[#06110f]/60 pointer-events-none mix-blend-multiply"></div>
+  <!-- Scanlines Overlay -->
+  <div class="scan-overlay absolute inset-0 z-10 pointer-events-none"></div>
+  <div class="animate-scan absolute inset-0 z-10 pointer-events-none"></div>
+  <!-- Main Grid Layout -->
+  <div class="relative z-20 flex h-full w-full max-w-[1920px] mx-auto p-4 lg:p-8 gap-6">
+    <!-- LEFT COLUMN: Content & Briefing -->
+    <div class="flex flex-col flex-1 max-w-2xl h-full justify-between pb-8">
+      <!-- Header Section -->
+      <div class="glass-panel p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-1 h-full bg-primary/50"></div>
+        <div class="flex items-center gap-2 text-primary text-xs tracking-widest font-mono mb-1">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          MISSION_ID: 094-ALPHA // STATUS: ACTIVE
+        </div>
+        <h1 class="text-4xl md:text-6xl font-black leading-none tracking-tighter text-white drop-shadow-lg">
+          RULES OF<br /><span class="text-primary">SURVIVAL</span>
+        </h1>
+        <div class="h-[1px] w-full bg-gradient-to-r from-primary/50 to-transparent my-4"></div>
+        <!-- Narrative Text -->
+        <div class="space-y-2 border-l-2 border-primary/20 pl-4 py-1">
+          <p class="text-gray-300 text-lg font-light leading-relaxed">
+            Monsters carry real questions. Correct answers reveal weak points. Only understanding leads to victory.
+          </p>
+        </div>
+      </div>
+      <!-- Question & Interaction Unit -->
+      <div class="flex flex-col gap-4 mt-auto">
+        <div class="glass-panel p-1 rounded-t-lg w-fit">
+          <div class="bg-primary/20 px-3 py-1 text-primary text-xs font-bold tracking-widest flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">radar</span>
+            TARGET ANALYSIS
+          </div>
+        </div>
+        <div class="glass-panel rounded-xl p-6 lg:p-8 relative">
+          <!-- Decoration corners -->
+          <div class="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-primary rounded-tl-lg"></div>
+          <div class="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-primary rounded-tr-lg"></div>
+          <div class="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-primary rounded-bl-lg"></div>
+          <div class="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-primary rounded-br-lg"></div>
+          <!-- Question -->
+          <div class="mb-6">
+            <h2 class="text-gray-400 text-xs font-mono mb-2 uppercase tracking-widest">Incoming Query Sequence</h2>
+            <p class="text-xl md:text-2xl font-medium text-white leading-snug">
+              Target exhibits high thermal resistance shell composition. What is the recommended ammo type for
+              penetration?
+            </p>
+          </div>
+          <!-- Answers Grid -->
+          <div class="grid grid-cols-1 gap-3">
+            <!-- Answer A -->
+            <button
+              class="group relative flex items-center justify-between p-4 rounded-lg border border-white/10 bg-surface-dark/40 hover:bg-primary/10 hover:border-primary transition-all duration-300 text-left">
+              <div class="flex items-center gap-4">
+                <span
+                  class="flex items-center justify-center w-8 h-8 rounded border border-white/20 text-white/50 font-mono text-sm group-hover:border-primary group-hover:text-primary group-hover:shadow-neon-sm transition-colors">A</span>
+                <span class="text-white font-medium group-hover:text-primary transition-colors">Cryo-Rounds</span>
+              </div>
+              <span
+                class="material-symbols-outlined text-white/20 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all">target</span>
+              <!-- Hover Effect Connector Line (Imaginary visual cue handled by placement) -->
+              <div
+                class="absolute right-[-20px] top-1/2 w-[20px] h-[1px] bg-primary opacity-0 group-hover:opacity-100 transition-opacity hidden lg:block">
+              </div>
+            </button>
+            <!-- Answer B -->
+            <button
+              class="group relative flex items-center justify-between p-4 rounded-lg border border-white/10 bg-surface-dark/40 hover:bg-primary/10 hover:border-primary transition-all duration-300 text-left">
+              <div class="flex items-center gap-4">
+                <span
+                  class="flex items-center justify-center w-8 h-8 rounded border border-white/20 text-white/50 font-mono text-sm group-hover:border-primary group-hover:text-primary group-hover:shadow-neon-sm transition-colors">B</span>
+                <span class="text-white font-medium group-hover:text-primary transition-colors">Incendiary Shells</span>
+              </div>
+              <span
+                class="material-symbols-outlined text-white/20 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all">target</span>
+              <div
+                class="absolute right-[-20px] top-1/2 w-[20px] h-[1px] bg-primary opacity-0 group-hover:opacity-100 transition-opacity hidden lg:block">
+              </div>
+            </button>
+            <!-- Answer C -->
+            <button
+              class="group relative flex items-center justify-between p-4 rounded-lg border border-white/10 bg-surface-dark/40 hover:bg-primary/10 hover:border-primary transition-all duration-300 text-left">
+              <div class="flex items-center gap-4">
+                <span
+                  class="flex items-center justify-center w-8 h-8 rounded border border-white/20 text-white/50 font-mono text-sm group-hover:border-primary group-hover:text-primary group-hover:shadow-neon-sm transition-colors">C</span>
+                <span class="text-white font-medium group-hover:text-primary transition-colors">Kinetic
+                  Penetrator</span>
+              </div>
+              <span
+                class="material-symbols-outlined text-white/20 group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all">target</span>
+              <div
+                class="absolute right-[-20px] top-1/2 w-[20px] h-[1px] bg-primary opacity-0 group-hover:opacity-100 transition-opacity hidden lg:block">
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CENTER AREA: Monster Visualization (Empty space for background to show, with overlays) -->
+    <div class="hidden lg:flex flex-1 relative items-center justify-center">
+      <!-- Floating Holographic Target Markers -->
+      <!-- These are positioned absolutely relative to this container to "overlay" the monster in the BG -->
+      <!-- Head Target (Linked to B) -->
+      <div class="absolute top-[20%] left-[50%] -translate-x-1/2 flex flex-col items-center group cursor-pointer">
+        <div class="relative w-12 h-12 flex items-center justify-center">
+          <div
+            class="absolute inset-0 border border-primary/30 rounded-full w-full h-full animate-[spin_4s_linear_infinite]">
+          </div>
+          <div class="absolute inset-2 border border-primary/60 rounded-full w-8 h-8 border-dashed"></div>
+          <div class="w-1 h-1 bg-primary rounded-full shadow-neon"></div>
+        </div>
+        <div
+          class="glass-panel px-2 py-1 mt-2 text-[10px] text-primary font-mono tracking-widest border-l-2 border-primary">
+          CRITICAL</div>
+        <!-- Line connector -->
+        <div class="absolute right-full top-1/2 w-16 h-[1px] bg-gradient-to-l from-primary/50 to-transparent"></div>
+      </div>
+      <!-- Chest Target (Linked to A) -->
+      <div class="absolute top-[45%] left-[45%] flex flex-col items-center group cursor-pointer">
+        <div class="relative w-16 h-16 flex items-center justify-center">
+          <div class="absolute inset-0 border-2 border-primary rounded-full w-full h-full opacity-50 reticle-ring">
+          </div>
+          <span
+            class="material-symbols-outlined text-primary text-2xl drop-shadow-[0_0_5px_rgba(37,244,192,0.8)]">match_word</span>
+        </div>
+        <div class="glass-panel px-2 py-1 mt-2 text-[10px] text-primary font-mono tracking-widest">ARMOR PLATE</div>
+        <!-- Line connector -->
+        <div class="absolute right-full top-1/2 w-24 h-[1px] bg-gradient-to-l from-primary/50 to-transparent"></div>
+      </div>
+      <!-- Leg Target (Linked to C) -->
+      <div class="absolute bottom-[25%] right-[30%] flex flex-col items-center group cursor-pointer">
+        <div class="relative w-10 h-10 flex items-center justify-center">
+          <div class="absolute inset-0 border border-red-500/50 rounded-sm w-full h-full"></div>
+          <div class="absolute -top-1 -right-1 w-2 h-2 border-t border-r border-red-500"></div>
+          <div class="absolute -bottom-1 -left-1 w-2 h-2 border-b border-l border-red-500"></div>
+        </div>
+        <div
+          class="glass-panel px-2 py-1 mt-2 text-[10px] text-red-400 font-mono tracking-widest border-r-2 border-red-500">
+          MOBILITY</div>
+      </div>
+    </div>
+    <!-- RIGHT COLUMN: Navigation -->
+    <div class="w-20 md:w-24 flex flex-col h-full items-end py-4">
+      <div
+        class="glass-panel w-full h-full rounded-2xl flex flex-col items-center py-6 gap-8 border-l border-white/5 border-r-0 border-y-0 bg-gradient-to-b from-surface-dark/90 to-surface-dark/40">
+        <!-- Logo / Top Icon -->
+        <div class="mb-4">
+          <div
+            class="w-10 h-10 rounded bg-primary text-background-dark flex items-center justify-center font-bold text-xl shadow-neon">
+            OS
+          </div>
+        </div>
+        <!-- Vertical Divider -->
+        <div class="w-[1px] h-12 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+        <!-- Nav Items -->
+        <nav class="flex flex-col gap-6 w-full items-center flex-1 justify-center">
+          <button class="group flex flex-col items-center gap-2 relative w-full px-2">
+            <div class="absolute right-0 top-0 bottom-0 w-[3px] bg-primary rounded-l-full shadow-neon"></div>
+            <div
+              class="p-3 rounded-xl bg-primary/10 text-primary transition-all duration-300 shadow-[inset_0_0_10px_rgba(37,244,192,0.2)]">
+              <span class="material-symbols-outlined text-[28px]" data-weight="fill">description</span>
+            </div>
+            <span class="text-[10px] font-mono tracking-widest text-primary hidden md:block">BRIEF</span>
+          </button>
+          <button
+            class="group flex flex-col items-center gap-2 relative w-full px-2 opacity-60 hover:opacity-100 transition-opacity">
+            <!-- Hover Indicator -->
+            <div
+              class="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-white/50 rounded-l-full opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+            <div class="p-3 rounded-xl hover:bg-white/5 text-white transition-all duration-300">
+              <span class="material-symbols-outlined text-[28px]">shield</span>
+            </div>
+            <span class="text-[10px] font-mono tracking-widest text-white hidden md:block">ARMORY</span>
+          </button>
+          <button
+            class="group flex flex-col items-center gap-2 relative w-full px-2 opacity-60 hover:opacity-100 transition-opacity">
+            <div
+              class="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-white/50 rounded-l-full opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+            <div class="p-3 rounded-xl hover:bg-white/5 text-white transition-all duration-300">
+              <span class="material-symbols-outlined text-[28px]">rocket_launch</span>
+            </div>
+            <span class="text-[10px] font-mono tracking-widest text-white hidden md:block">DEPLOY</span>
+          </button>
+          <button
+            class="group flex flex-col items-center gap-2 relative w-full px-2 opacity-60 hover:opacity-100 transition-opacity">
+            <div
+              class="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-white/50 rounded-l-full opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+            <div class="p-3 rounded-xl hover:bg-white/5 text-white transition-all duration-300">
+              <span class="material-symbols-outlined text-[28px]">settings_suggest</span>
+            </div>
+            <span class="text-[10px] font-mono tracking-widest text-white hidden md:block">SYSTEM</span>
+          </button>
+        </nav>
+        <!-- Bottom Status -->
+        <div class="mt-auto flex flex-col items-center gap-2">
+          <div class="w-1 h-1 rounded-full bg-green-500 animate-pulse"></div>
+          <span class="text-[8px] text-white/40 font-mono rotate-180" style="writing-mode: vertical-rl;">ONLINE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Decorative Bottom Data Bar -->
+  <div class="absolute bottom-6 left-8 right-32 z-30 pointer-events-none hidden md:flex justify-between items-end">
+    <div class="flex gap-8">
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] text-primary/60 font-mono">ENVIRONMENT</span>
+        <span class="text-sm text-white font-bold">HAZARDOUS // STORM</span>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] text-primary/60 font-mono">VISIBILITY</span>
+        <span class="text-sm text-white font-bold">LOW [THERMAL REQ]</span>
+      </div>
+    </div>
+    <div class="text-[10px] text-white/20 font-mono tracking-[0.2em]">
+      TACTICAL_OS V.4.0.2 // UNIT 734
+    </div>
+  </div>
+</body>
+
+</html>

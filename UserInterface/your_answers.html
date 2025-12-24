@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Field Terminal // Debrief</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#25f4c0",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0a110f", // Darker base for better contrast with overlays
+                        "surface-dark": "#13231f",
+                        "accent-teal": "#25f4c0",
+                        "accent-danger": "#ff4a4a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #25f4c005 1px, transparent 1px), linear-gradient(to bottom, #25f4c005 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a110f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #22493f;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #25f4c0;
+        }
+
+        .glass-panel {
+            background: rgba(16, 34, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 244, 192, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(37, 244, 192, 0.5);
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(37, 244, 192, 0.03) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% {
+                bottom: 100%;
+            }
+
+            100% {
+                bottom: -100%;
+            }
+        }
+
+        .bg-cinematic {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Accordion Animations */
+        details>summary {
+            list-style: none;
+        }
+
+        details>summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+
+<body
+    class="font-display bg-background-light dark:bg-background-dark text-white overflow-x-hidden antialiased selection:bg-primary selection:text-background-dark">
+    <!-- Cinematic Background -->
+    <div class="bg-cinematic bg-[url('https://images.unsplash.com/photo-1542256843-26156d95393d?q=80&amp;w=2940&amp;auto=format&amp;fit=crop')] brightness-[0.25]"
+        data-alt="Dark moody rain soaked futuristic city street at night with neon reflections"></div>
+    <div
+        class="fixed inset-0 bg-gradient-to-b from-background-dark/80 via-transparent to-background-dark/90 z-[-1] pointer-events-none">
+    </div>
+    <div class="fixed inset-0 bg-grid-pattern bg-[length:40px_40px] pointer-events-none z-[-1]"></div>
+    <!-- Scanline Effect -->
+    <div class="scanline"></div>
+    <div class="relative flex h-screen w-full flex-col">
+        <!-- Header / Top Nav -->
+        <header class="flex-none w-full border-b border-[#25f4c0]/20 bg-background-dark/80 backdrop-blur-md z-50">
+            <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-8 text-primary flex items-center justify-center border border-primary/30 rounded bg-primary/10">
+                        <span class="material-symbols-outlined text-[20px]">terminal</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 class="text-white text-sm font-bold tracking-[0.1em] leading-none neon-glow">OPS // TERMINAL
+                        </h2>
+                        <span class="text-[10px] text-primary/60 font-mono tracking-widest mt-1">UNIT 734-ALPHA</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="hidden md:flex px-3 py-1 rounded bg-[#25f4c0]/10 border border-[#25f4c0]/20 items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        <span class="text-[10px] font-bold text-primary tracking-widest">NETWORK: SECURE</span>
+                    </div>
+                    <button
+                        class="flex size-10 items-center justify-center rounded-lg bg-[#22493f]/40 hover:bg-[#25f4c0]/20 border border-[#25f4c0]/20 text-primary transition-colors">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                    <button
+                        class="flex size-10 items-center justify-center rounded-lg bg-[#22493f]/40 hover:bg-[#25f4c0]/20 border border-[#25f4c0]/20 text-primary transition-colors">
+                        <span class="material-symbols-outlined">person</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto relative w-full flex flex-col items-center">
+            <div class="w-full max-w-4xl px-4 py-8 md:py-12 flex flex-col gap-8">
+                <!-- Page Heading -->
+                <div
+                    class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-4 border-primary pl-6 py-2">
+                    <div class="flex flex-col gap-1">
+                        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white uppercase"
+                            style="text-shadow: 0 0 20px rgba(37,244,192,0.1);">Mission Debrief</h1>
+                        <p class="text-primary/60 text-sm font-mono tracking-[0.2em] uppercase">Log ID: 9284-XK //
+                            Status: Complete</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-xl">verified</span>
+                        <span class="text-white/80 font-mono text-sm">DATA SYNCED</span>
+                    </div>
+                </div>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div
+                        class="glass-panel rounded-lg p-5 flex flex-col gap-1 group hover:border-primary/40 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-primary/70 text-xs font-bold tracking-widest uppercase">Accuracy</p>
+                            <span class="material-symbols-outlined text-primary/50 text-lg">target</span>
+                        </div>
+                        <p class="text-white text-3xl font-bold font-mono tracking-tight neon-glow">85%</p>
+                        <div class="w-full bg-white/10 h-1 mt-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full w-[85%] shadow-[0_0_10px_rgba(37,244,192,0.8)]"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="glass-panel rounded-lg p-5 flex flex-col gap-1 group hover:border-primary/40 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-primary/70 text-xs font-bold tracking-widest uppercase">Rank</p>
+                            <span class="material-symbols-outlined text-primary/50 text-lg">military_tech</span>
+                        </div>
+                        <p class="text-white text-3xl font-bold font-mono tracking-tight neon-glow">CLASS A</p>
+                        <p class="text-[10px] text-white/40 mt-2">TOP 5% OF OPERATIVES</p>
+                    </div>
+                    <div
+                        class="glass-panel rounded-lg p-5 flex flex-col gap-1 group hover:border-primary/40 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-primary/70 text-xs font-bold tracking-widest uppercase">Time Elapsed</p>
+                            <span class="material-symbols-outlined text-primary/50 text-lg">timer</span>
+                        </div>
+                        <p class="text-white text-3xl font-bold font-mono tracking-tight">04:22</p>
+                        <p class="text-[10px] text-primary mt-2 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[10px]">arrow_drop_up</span> -12s vs AVG
+                        </p>
+                    </div>
+                </div>
+                <!-- Accordions / Questions List -->
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-white/50 text-xs font-bold tracking-[0.2em] uppercase mb-2 pl-1">Tactical Analysis
+                    </h3>
+                    <!-- Item 1: Correct -->
+                    <details
+                        class="group glass-panel rounded-lg overflow-hidden transition-all duration-300 open:bg-[#13231f]/90">
+                        <summary
+                            class="flex cursor-pointer items-center justify-between gap-4 p-5 hover:bg-white/5 transition-colors select-none">
+                            <div class="flex items-center gap-4 overflow-hidden">
+                                <div
+                                    class="flex-none flex items-center justify-center size-8 rounded bg-primary/10 border border-primary/30 text-primary shadow-[0_0_15px_rgba(37,244,192,0.2)]">
+                                    <span class="material-symbols-outlined text-lg">check</span>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span
+                                        class="text-[10px] text-primary/60 font-mono tracking-wider uppercase mb-0.5">Q:
+                                        Target Identification</span>
+                                    <p class="text-white text-sm md:text-base font-medium truncate">Identify the
+                                        high-value target in Sector 4</p>
+                                </div>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-white/40 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+                        </summary>
+                        <div class="px-5 pb-5 pt-2 border-t border-white/5">
+                            <div class="flex flex-col gap-3 pl-[3.25rem]">
+                                <div class="flex gap-2 text-sm">
+                                    <span class="text-white/40 font-mono">CHOICE:</span>
+                                    <span class="text-primary font-bold">Commander Vex (Correct)</span>
+                                </div>
+                                <p class="text-white/70 text-sm leading-relaxed border-l-2 border-primary/30 pl-3">
+                                    Analysis: Excellent work. Subject identified the officer insignia despite
+                                    camouflage. Tactical advantage maintained.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                    <!-- Item 2: Incorrect -->
+                    <details
+                        class="group glass-panel rounded-lg overflow-hidden transition-all duration-300 open:bg-[#13231f]/90"
+                        open="">
+                        <summary
+                            class="flex cursor-pointer items-center justify-between gap-4 p-5 hover:bg-white/5 transition-colors select-none">
+                            <div class="flex items-center gap-4 overflow-hidden">
+                                <div
+                                    class="flex-none flex items-center justify-center size-8 rounded bg-accent-danger/10 border border-accent-danger/30 text-accent-danger shadow-[0_0_15px_rgba(255,74,74,0.2)]">
+                                    <span class="material-symbols-outlined text-lg">close</span>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span
+                                        class="text-[10px] text-accent-danger/60 font-mono tracking-wider uppercase mb-0.5">Q:
+                                        Stealth Protocol</span>
+                                    <p class="text-white text-sm md:text-base font-medium truncate">Approach method for
+                                        water extraction</p>
+                                </div>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-white/40 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+                        </summary>
+                        <div class="px-5 pb-5 pt-2 border-t border-white/5">
+                            <div class="flex flex-col gap-3 pl-[3.25rem]">
+                                <div class="flex gap-6 text-sm">
+                                    <div>
+                                        <span class="text-white/40 font-mono block text-[10px] uppercase">Your
+                                            Choice</span>
+                                        <span class="text-accent-danger font-bold line-through decoration-2">Standard
+                                            Sprint</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-white/40 font-mono block text-[10px] uppercase">Optimal
+                                            Path</span>
+                                        <span class="text-primary font-bold">Crouch &amp; Wade</span>
+                                    </div>
+                                </div>
+                                <div class="bg-accent-danger/5 border border-accent-danger/20 rounded p-3 mt-1">
+                                    <p class="text-white/80 text-sm leading-relaxed">
+                                        <strong
+                                            class="text-accent-danger font-mono text-xs uppercase block mb-1">Warning //
+                                            Noise Violation</strong>
+                                        Subject failed to maintain noise discipline on reflective surfaces. Splashing
+                                        alerted nearby sentries resulting in combat engagement.
+                                    </p>
+                                    <p class="text-primary/80 text-xs mt-3 flex items-center gap-2 font-mono">
+                                        <span class="material-symbols-outlined text-[14px]">lightbulb</span>
+                                        HINT: Equip silent tread boots or reduce movement speed in water.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                    <!-- Item 3: Correct -->
+                    <details
+                        class="group glass-panel rounded-lg overflow-hidden transition-all duration-300 open:bg-[#13231f]/90">
+                        <summary
+                            class="flex cursor-pointer items-center justify-between gap-4 p-5 hover:bg-white/5 transition-colors select-none">
+                            <div class="flex items-center gap-4 overflow-hidden">
+                                <div
+                                    class="flex-none flex items-center justify-center size-8 rounded bg-primary/10 border border-primary/30 text-primary shadow-[0_0_15px_rgba(37,244,192,0.2)]">
+                                    <span class="material-symbols-outlined text-lg">check</span>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span
+                                        class="text-[10px] text-primary/60 font-mono tracking-wider uppercase mb-0.5">Q:
+                                        Weapon Selection</span>
+                                    <p class="text-white text-sm md:text-base font-medium truncate">Choosing loadout for
+                                        CQC environment</p>
+                                </div>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-white/40 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+                        </summary>
+                        <div class="px-5 pb-5 pt-2 border-t border-white/5">
+                            <div class="flex flex-col gap-3 pl-[3.25rem]">
+                                <div class="flex gap-2 text-sm">
+                                    <span class="text-white/40 font-mono">CHOICE:</span>
+                                    <span class="text-primary font-bold">Shotgun (Correct)</span>
+                                </div>
+                                <p class="text-white/70 text-sm leading-relaxed border-l-2 border-primary/30 pl-3">
+                                    Analysis: High impact probability in close quarters confirmed. Minimal collateral
+                                    damage to intel assets.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                    <!-- Item 4: Correct -->
+                    <details
+                        class="group glass-panel rounded-lg overflow-hidden transition-all duration-300 open:bg-[#13231f]/90">
+                        <summary
+                            class="flex cursor-pointer items-center justify-between gap-4 p-5 hover:bg-white/5 transition-colors select-none">
+                            <div class="flex items-center gap-4 overflow-hidden">
+                                <div
+                                    class="flex-none flex items-center justify-center size-8 rounded bg-primary/10 border border-primary/30 text-primary shadow-[0_0_15px_rgba(37,244,192,0.2)]">
+                                    <span class="material-symbols-outlined text-lg">check</span>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span
+                                        class="text-[10px] text-primary/60 font-mono tracking-wider uppercase mb-0.5">Q:
+                                        Extraction Point</span>
+                                    <p class="text-white text-sm md:text-base font-medium truncate">Navigate to safest
+                                        EVAC zone</p>
+                                </div>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-white/40 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+                        </summary>
+                        <div class="px-5 pb-5 pt-2 border-t border-white/5">
+                            <div class="flex flex-col gap-3 pl-[3.25rem]">
+                                <div class="flex gap-2 text-sm">
+                                    <span class="text-white/40 font-mono">CHOICE:</span>
+                                    <span class="text-primary font-bold">Rooftop Alpha (Correct)</span>
+                                </div>
+                                <p class="text-white/70 text-sm leading-relaxed border-l-2 border-primary/30 pl-3">
+                                    Analysis: Good verticality usage. Avoided ground-level patrols.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                <div class="h-20 md:h-0"></div> <!-- Spacer for fixed footer on mobile -->
+            </div>
+        </main>
+        <!-- Footer Actions -->
+        <footer class="flex-none w-full bg-[#0a110f]/90 border-t border-[#25f4c0]/10 backdrop-blur-xl p-4 z-50">
+            <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="hidden sm:flex items-center gap-2">
+                    <span class="material-symbols-outlined text-white/30 text-lg">rss_feed</span>
+                    <span class="text-[10px] text-white/30 font-mono uppercase tracking-widest">Connection Stable</span>
+                </div>
+                <div class="flex w-full sm:w-auto items-center gap-3">
+                    <button
+                        class="flex-1 sm:flex-none h-12 px-6 rounded border border-white/20 text-white font-bold text-sm hover:bg-white/5 hover:border-white/40 transition-all uppercase tracking-wide flex items-center justify-center gap-2 group">
+                        <span
+                            class="material-symbols-outlined text-lg group-hover:-rotate-180 transition-transform duration-500">replay</span>
+                        Retry
+                    </button>
+                    <button
+                        class="flex-1 sm:flex-none h-12 px-8 rounded bg-primary text-[#0a110f] font-bold text-sm hover:bg-[#5ffcd6] hover:shadow-[0_0_20px_rgba(37,244,192,0.4)] transition-all uppercase tracking-wide flex items-center justify-center gap-2 group">
+                        <span
+                            class="material-symbols-outlined text-lg group-hover:scale-110 transition-transform">military_tech</span>
+                        View Rewards
+                    </button>
+                    <button
+                        class="flex-1 sm:flex-none h-12 px-6 rounded text-white/60 font-medium text-sm hover:text-white hover:bg-white/5 transition-all uppercase tracking-wide flex items-center justify-center gap-2">
+                        Return
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
