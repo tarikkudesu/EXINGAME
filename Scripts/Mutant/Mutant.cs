@@ -4,9 +4,6 @@ using System;
 public partial class Mutant : CharacterBody3D
 {
 	[Export]
-	public NodePath PlayerNodePath { get; set; }
-	
-	[Export]
 	public NodePath NavigationAgentPath { get; set; }
 	
 	[Export]
@@ -27,6 +24,9 @@ public partial class Mutant : CharacterBody3D
 	[Export]
 	public float AttackRange = 3.0f;
 	
+	[Export]
+	public string Label { get; set; } = "";
+
 	private CharacterBody3D player;
 	private NavigationAgent3D navAgent;
 	private AnimationTree animationTree;
@@ -40,18 +40,11 @@ public partial class Mutant : CharacterBody3D
 		// Store the spawn position
 		spawnPosition = GlobalPosition;
 		
-		// Get the player node using the exported path
-		if (PlayerNodePath != null && !PlayerNodePath.IsEmpty)
+		// Get the player from global group
+		player = GetTree().GetFirstNodeInGroup("Player") as CharacterBody3D;
+		if (player == null)
 		{
-			player = GetNode<CharacterBody3D>(PlayerNodePath);
-			if (player == null)
-			{
-				GD.PrintErr("Player node not found at path: " + PlayerNodePath);
-			}
-		}
-		else
-		{
-			GD.PrintErr("PlayerNodePath is not set!");
+			GD.PrintErr("Player not found in 'Player' group!");
 		}
 		
 		// Get the NavigationAgent3D using the exported path

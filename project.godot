@@ -48,6 +48,10 @@ folder_colors={
 "res://Sounds/": "blue"
 }
 
+[global_group]
+
+Player=""
+
 [input]
 
 forward={
