@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://2e7w8khdyd0k"
+path.s3tc="res://.godot/imported/katana_0.jpg-3c1bc6df35349ae610a91a7bc1b5c30a.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "ce721b9f4b48b46d9751209633c1e83b"
+}
+
+[deps]
+
+source_file="res://Models/katana_0.jpg"
+dest_files=["res://.godot/imported/katana_0.jpg-3c1bc6df35349ae610a91a7bc1b5c30a.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0
