@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://k0g8l20jpn5l"]
+[gd_scene load_steps=16 format=3 uid="uid://k0g8l20jpn5l"]
 
 [ext_resource type="Material" uid="uid://j7782yfgmq8m" path="res://Materials/Brick_069.tres" id="2_buung"]
 [ext_resource type="Sky" uid="uid://bb73jaefiwfku" path="res://Skys/CloudySkyStatic.tres" id="2_fb8vh"]
@@ -15,7 +15,7 @@
 background_mode = 2
 background_energy_multiplier = 1.48
 sky = ExtResource("2_fb8vh")
-sky_rotation = Vector3(0, 0.705891, 0)
+sky_rotation = Vector3(0, 7.60634, 0)
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 2
@@ -60,6 +60,10 @@ auto_exposure_max_sensitivity = 1500.0
 albedo = Color(0.137255, 0.188235, 0.196078, 1)
 edge_fade = 1.77531
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1nsul"]
+metallic = 1.0
+roughness = 0.0
+
 [sub_resource type="NavigationMesh" id="NavigationMesh_dgldw"]
 vertices = PackedVector3Array(-50, 0.95, 49.9816, 50, 0.95, 50.2316, 50, 0.95, -50.0184, -50, 0.95, -50.0184)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
@@ -100,6 +104,16 @@ _rotationSpeed = 0.005
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.66663, -37.8649, -32.0982)
 size = Vector3(1000, 30, 1000)
 material = SubResource("FogMaterial_d1576")
+
+[node name="Player" parent="." groups=["Player"] instance=ExtResource("14_qv7ho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.58393, 102.183, -6.21454)
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="." groups=["Concrete"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+material_override = SubResource("StandardMaterial3D_1nsul")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
 
 [node name="Stage" type="Node3D" parent="."]
 
@@ -168,9 +182,6 @@ autoplay = true
 stream = ExtResource("6_gcwv2")
 volume_db = -5.0
 autoplay = true
-
-[node name="Player" parent="." groups=["Player"] instance=ExtResource("14_qv7ho")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.58393, 107.884, -6.21454)
 
 [node name="TubeLight" parent="." instance=ExtResource("20_gox77")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 24.4528, 1.03314, 10.752)

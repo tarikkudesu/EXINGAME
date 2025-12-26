@@ -102,7 +102,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.22, 0.3, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(1.22522, -0.511381, 0), Vector3(-2.23577, 1.5324, 0), Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(1.22522, -0.511381, 0), Vector3(-1.0472, 1.5324, 0), Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_i3cfc"]
@@ -1113,7 +1113,7 @@ transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition
 graph_offset = Vector2(-152, -182)
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_osdti"]
-graph_offset = Vector2(-577.398, 204.183)
+graph_offset = Vector2(-598, 27)
 nodes/moveState/node = SubResource("AnimationNodeStateMachine_4ibcj")
 nodes/moveState/position = Vector2(-220, 120)
 node_connections = [&"output", 0, &"moveState"]
@@ -1127,7 +1127,7 @@ font = SubResource("SystemFont_36c0q")
 font_size = 45
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_resetPosition", "_standingCollider", "_animator", "_crouchingCollider", "ceilingRay", "_vaultRay", "_vaultCheck", "_vaultCast", "stepCast", "_camera", "_speedLabel", "_momentumLabel", "_stateLabel", "_animationLabel", "_desiredSpeedLabel", "_previousStateLabel")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_resetPosition", "_standingCollider", "_animator", "_swordAnimationPlayer", "_crouchingCollider", "ceilingRay", "_vaultRay", "_vaultCheck", "_vaultCast", "stepCast", "_camera", "_speedLabel", "_momentumLabel", "_stateLabel", "_animationLabel", "_desiredSpeedLabel", "_previousStateLabel")]
 collision_mask = 15
 floor_max_angle = 1.13446
 floor_snap_length = 0.3
@@ -1135,6 +1135,7 @@ script = ExtResource("1_1x2u3")
 _resetPosition = NodePath("ResetPos")
 _standingCollider = NodePath("Standing_collision_shape")
 _animator = NodePath("AnimationTree")
+_swordAnimationPlayer = NodePath("Mesh/Neck/Head/Eyes/CamHead/Node3D/katana/AnimationPlayer")
 maxSpeed = 13.0
 accelerationRate = 2.0
 _airLerpSpeed = 1.5

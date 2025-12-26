@@ -27,6 +27,7 @@ public partial class PlayerMovement : CharacterBody3D
 	[Export] private CollisionShape3D _standingCollider;
 	[Export] private AnimationTree _animator;
 	[Export] private bool _physicsInterpolate = true;
+	[Export] private AnimationPlayer _swordAnimationPlayer;
 
 	public CameraState camState;
 
@@ -220,10 +221,23 @@ public partial class PlayerMovement : CharacterBody3D
 
 	public override void _Process(double delta)
 	{
+		if (Input.IsActionPressed("slay"))
+		{
+			if (!_swordAnimationPlayer.IsPlaying() || _swordAnimationPlayer.CurrentAnimation != "slay")
+			{
+				_swordAnimationPlayer.Play("slay");
+			}
+		}
 		HandleZRotation((float)delta);
+
 
 		if (Input.IsKeyPressed(Key.R) && _resetPosition != null)
 			GlobalPosition = _resetPosition.GlobalPosition;
+	
+		if (Input.IsKeyPressed(Key.V))
+		{
+			GlobalPosition = GlobalPosition + new Vector3(0, -10, 0);
+		}
 
 		PhysicsInterpolation();
 

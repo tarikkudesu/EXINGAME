@@ -109,8 +109,17 @@ public partial class Mutant : CharacterBody3D
 			LookAt(lookTarget, Vector3.Up);
 		}
 
-
-		if (distanceToPlayer <= DetectionRange && !inAttackRange && distanceToPlayer > MinDistanceToPlayer && distanceFromSpawn < MaxDistanceFromSpawn)
+		if (inAttackRange) {
+			if (useSwipe) {
+				animationTree.Set("parameters/conditions/swipe", true);
+				animationTree.Set("parameters/conditions/punch", false);
+			} else {
+				animationTree.Set("parameters/conditions/punch", true);
+				animationTree.Set("parameters/conditions/swipe", false);
+			}
+			useSwipe = !useSwipe;
+		}
+		else if (distanceToPlayer <= DetectionRange && distanceToPlayer > MinDistanceToPlayer && distanceFromSpawn < MaxDistanceFromSpawn)
 		{
 			if (navAgent != null)
 			{
@@ -119,7 +128,7 @@ public partial class Mutant : CharacterBody3D
 				{
 					Vector3 nextTargetPosition = navAgent.GetNextPathPosition();
 					Vector3 direction = (nextTargetPosition - GlobalPosition);
-					direction.Y = 0; // Ignore vertical difference
+					direction.Y = 0;
 					direction = direction.Normalized();
 					Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
 				}
@@ -131,25 +140,20 @@ public partial class Mutant : CharacterBody3D
 			else
 			{
 				Vector3 direction = (player.GlobalPosition - GlobalPosition);
-				direction.Y = 0; // Ignore vertical difference
+				direction.Y = 0;
 				direction = direction.Normalized();
 				Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
 			}
+			animationTree.Set("parameters/conditions/punch", false);
+			animationTree.Set("parameters/conditions/swipe", false);
 			animationTree.Set("parameters/conditions/run", true);
-		}
-		else if (inAttackRange) {
-			if (useSwipe) {
-				animationTree.Set("parameters/conditions/swipe", true);
-				animationTree.Set("parameters/conditions/punch", false);
-			} else {
-				animationTree.Set("parameters/conditions/punch", true);
-				animationTree.Set("parameters/conditions/swipe", false);
-			}
-			useSwipe = !useSwipe;
 		}
 		else
 		{
 			Velocity = new Vector3(0, Velocity.Y, 0);
+			animationTree.Set("parameters/conditions/run", false);
+			animationTree.Set("parameters/conditions/punch", false);
+			animationTree.Set("parameters/conditions/swipe", false);
 		}
 		MoveAndSlide();
 	}
