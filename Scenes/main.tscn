@@ -1,12 +1,14 @@
-[gd_scene load_steps=16 format=3 uid="uid://k0g8l20jpn5l"]
+[gd_scene load_steps=18 format=3 uid="uid://k0g8l20jpn5l"]
 
 [ext_resource type="Material" uid="uid://j7782yfgmq8m" path="res://Materials/Brick_069.tres" id="2_buung"]
 [ext_resource type="Sky" uid="uid://bb73jaefiwfku" path="res://Skys/CloudySkyStatic.tres" id="2_fb8vh"]
 [ext_resource type="Material" uid="uid://fdx6yjtfayq3" path="res://Materials/MetalPlates_008.tres" id="3_kljmn"]
 [ext_resource type="Script" path="res://Scripts/RotateNode.cs" id="3_le5wj"]
 [ext_resource type="AudioStream" uid="uid://d2vbmwo1pkv42" path="res://Sounds/ambience-forest-birds-wind-trees.mp3" id="5_ut7sm"]
+[ext_resource type="PackedScene" uid="uid://jtjbcjaa2yne" path="res://Scenes/shoji.tscn" id="6_1jty4"]
 [ext_resource type="AudioStream" uid="uid://cfqac1mv8tg20" path="res://Sounds/ambience - air conditioner.wav" id="6_gcwv2"]
 [ext_resource type="Script" path="res://Scripts/SkyRotation.cs" id="6_y41ai"]
+[ext_resource type="Script" path="res://Scripts/door.gd" id="7_8aksj"]
 [ext_resource type="PackedScene" uid="uid://cfoc1w70dtbrv" path="res://mutant.tscn" id="9_wp6o8"]
 [ext_resource type="PackedScene" uid="uid://ddp62lqxgj3c2" path="res://Scenes/PlayerController/Player.tscn" id="14_qv7ho"]
 [ext_resource type="PackedScene" uid="uid://c3n5ryfjyi3h1" path="res://Models/TubeLight/tube_light.tscn" id="20_gox77"]
@@ -15,7 +17,7 @@
 background_mode = 2
 background_energy_multiplier = 1.48
 sky = ExtResource("2_fb8vh")
-sky_rotation = Vector3(0, 7.60634, 0)
+sky_rotation = Vector3(0, 9.35883, 0)
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 2
@@ -65,7 +67,7 @@ metallic = 1.0
 roughness = 0.0
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_dgldw"]
-vertices = PackedVector3Array(-50, 0.95, 49.9816, 50, 0.95, 50.2316, 50, 0.95, -50.0184, -50, 0.95, -50.0184)
+vertices = PackedVector3Array(-50, 1, 49.9816, 50, 1, 50.2316, 50, 1, -50.0184, -50, 1, -50.0184)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
 agent_height = 0.0
 agent_max_slope = 60.0
@@ -106,79 +108,1132 @@ size = Vector3(1000, 30, 1000)
 material = SubResource("FogMaterial_d1576")
 
 [node name="Player" parent="." groups=["Player"] instance=ExtResource("14_qv7ho")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.58393, 102.183, -6.21454)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 551.615, 0)
 
 [node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="." groups=["Concrete"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 549.432, 0)
 material_override = SubResource("StandardMaterial3D_1nsul")
 use_collision = true
 collision_layer = 2
-size = Vector3(100, 1, 100)
+size = Vector3(100, 0.1, 100)
 
-[node name="Stage" type="Node3D" parent="."]
+[node name="ConcreteCSGBox3D3" type="CSGBox3D" parent="." groups=["Concrete"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 549.353, 0)
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 0.1, 100)
 
-[node name="Node3D5" type="Node3D" parent="Stage"]
+[node name="Stage10" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -450.103, 0)
 
-[node name="Mutant" parent="Stage/Node3D5" instance=ExtResource("9_wp6o8")]
-transform = Transform3D(-1.48441, 0, -0.215705, 0, 1.5, 0, 0.215705, 0, -1.48441, -7.95043, 10.4538, -0.409914)
+[node name="shoji" parent="Stage10" instance=ExtResource("6_1jty4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 3.66544, 1008.01, 0)
+
+[node name="door" type="Node3D" parent="Stage10" node_paths=PackedStringArray("object_to_duplicate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.39789, 1007.93, 0)
+script = ExtResource("7_8aksj")
+object_to_duplicate = NodePath(".")
+number_of_duplicates = 2
+spawn_area = Vector3(100, 0, 100)
+
+[node name="shoji2" parent="Stage10/door" instance=ExtResource("6_1jty4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.118351, 0.0786133, 0)
+
+[node name="shoji3" parent="Stage10/door" instance=ExtResource("6_1jty4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.213718, 0.0786133, 0)
+
+[node name="shoji4" parent="Stage10/door" instance=ExtResource("6_1jty4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.588674, 0.0786133, 0)
+
+[node name="shoji5" parent="Stage10/door" instance=ExtResource("6_1jty4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.4307, 0.0786133, 0)
+
+[node name="shoji6" parent="Stage10/door" instance=ExtResource("6_1jty4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.0359702, 0.0786133, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage10"]
+
+[node name="Mutant" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.19774, 0, -1.34366, 0, 1.8, 0, 1.34366, 0, -1.19774, -5.17535, 0.462494, -8.28129)
 DetectionRange = 50.0
 MinDistanceToPlayer = 3.0
-MaxDistanceFromSpawn = 20.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="BigMutant2" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-2.32895, 0, -2.61266, 0, 3.5, 0, 2.61266, 0, -2.32895, -2, 0.42, -2)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.33083, 0, -1.49295, 0, 2, 0, 1.49295, 0, -1.33083, 1.129, 0.462, -5.5)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.46391, 0, -1.64225, 0, 2.2, 0, 1.64225, 0, -1.46391, 2, 0.462, 4)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
 Speed = 4.0
 AttackRange = 4.0
 Label = "A"
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage/Node3D5"]
+[node name="Mutant5" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.66353, 0, -1.86619, 0, 2.5, 0, 1.86619, 0, -1.66353, 6, 0.462, -1)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 5.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant6" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 4, 0.441, 8)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 6.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant7" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 7.3993, 0.462495, 3.94713)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 7.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant8" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -9.056, 0.462, -5)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 8.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant9" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -10, 0.462, -10)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 9.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant10" parent="Stage10/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 9.97298, 0.462, 0.0362344)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 14.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage10/Node3D5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.547174, -0.417164, 0.382969)
 navigation_mesh = SubResource("NavigationMesh_dgldw")
 
-[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage/Node3D5/NavigationRegion3D" groups=["Metal"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage10/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
 material_override = ExtResource("3_kljmn")
 use_collision = true
 collision_layer = 2
 collision_mask = 2
 size = Vector3(100, 1, 1)
 
-[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage/Node3D5/NavigationRegion3D" groups=["Metal"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -50)
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage10/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
 material_override = ExtResource("3_kljmn")
 use_collision = true
 collision_layer = 2
 collision_mask = 2
 size = Vector3(100, 1, 1)
 
-[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage/Node3D5/NavigationRegion3D" groups=["Metal"]]
-transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0, 0.0680366)
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage10/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
 material_override = ExtResource("3_kljmn")
 use_collision = true
 collision_layer = 2
 collision_mask = 2
 size = Vector3(91.0016, 1, 1)
 
-[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage/Node3D5/NavigationRegion3D" groups=["Metal"]]
-transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0, -0.0571156)
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage10/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
 material_override = ExtResource("3_kljmn")
 use_collision = true
 collision_layer = 2
 collision_mask = 2
 size = Vector3(90.8083, 1, 1)
 
-[node name="Exam" type="Node3D" parent="Stage/Node3D5/NavigationRegion3D"]
+[node name="Exam" type="Node3D" parent="Stage10/Node3D5/NavigationRegion3D"]
 
-[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage10/Node3D5/NavigationRegion3D" groups=["Concrete"]]
 material_override = ExtResource("2_buung")
 use_collision = true
 collision_layer = 2
 size = Vector3(100, 1, 100)
 
-[node name="Audio" type="Node3D" parent="Stage"]
+[node name="Audio" type="Node3D" parent="Stage10"]
 
-[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage/Audio"]
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage10/Audio"]
 stream = ExtResource("5_ut7sm")
 volume_db = -15.0
 autoplay = true
 
-[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage/Audio"]
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage10/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage9" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -350.103, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage9"]
+
+[node name="Mutant" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 1.5358, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -0.550995, 1.5358, 1.97746)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -7.81935, 1.5358, -7.50527)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -14.1395, 1.5358, -0.962896)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant5" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -15.3873, -2.83354, -5.56823)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 5.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant6" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -4.6432, 1.5358, 2.77452)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 6.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant7" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -0.457813, 1.5358, -1.545)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 7.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant8" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -11.3009, 1.5358, 3.14556)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 8.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant9" parent="Stage9/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -3.57644, 1.5358, -6.06189)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 9.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage9/Node3D5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.143936, 0.414307, -0.0562439)
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage9/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage9/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage9/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage9/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage9/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage9/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage9"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage9/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage9/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage8" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -250.103, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage8"]
+
+[node name="Mutant" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462495, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -4.81751, 0.462494, -6.38597)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -14.01, 0.462494, 0.250231)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -1.20524, 0.462494, 0.215444)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant5" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 5.68554, 0.462494, 1.77685)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 5.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant6" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 0.539722, 0.462494, 5.00363)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 6.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant7" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -8.69144, 0.462494, 6.61193)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 7.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant8" parent="Stage8/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 2.51662, 0.462494, -3.72126)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 8.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage8/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage8/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage8/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage8/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage8/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage8/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage8/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage8"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage8/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage8/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage7" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -150.103, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage7"]
+
+[node name="Mutant" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 3.96202, 0.462494, 5.82405)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 4.17636, 0.462494, -3.02863)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -12.3516, 0.462494, 1.36622)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -2.55317, 0.462494, -7.23471)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant5" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -5.79416, 0.462494, 7.00985)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 5.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant6" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -1.04164, 0.462494, 1.83976)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 6.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant7" parent="Stage7/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -10.6668, 0.462494, -4.41902)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 7.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage7/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage7/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage7/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage7/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage7/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage7/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage7/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage7"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage7/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage7/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage6" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50.1034, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage6"]
+
+[node name="Mutant" parent="Stage6/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462495, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage6/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.24594, 0, 0.835249, 0, 1.5, 0, -0.835249, 0, -1.24594, 0.766879, 0.462494, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage6/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.961572, 0, 1.15125, 0, 1.5, 0, -1.15125, 0, -0.961572, 0.766879, 0.462494, 5.51423)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage6/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.961572, 0, 1.15125, 0, 1.5, 0, -1.15125, 0, -0.961572, -6.50492, 0.462494, 5.51423)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant5" parent="Stage6/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.25912, 0, -0.815245, 0, 1.5, 0, 0.815245, 0, -1.25912, -17.2178, 0.462494, 5.51423)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 5.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant6" parent="Stage6/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-1.25912, 0, -0.815245, 0, 1.5, 0, 0.815245, 0, -1.25912, -14.6967, 0.462494, -5.68418)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 6.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage6/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage6/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage6/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage6/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage6/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage6/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage6/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage6"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage6/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage6/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage5" type="Node3D" parent="."]
+transform = Transform3D(0.999542, 0.0021677, 0.0301979, -0.00291542, 0.99969, 0.0247392, -0.0301349, -0.0248159, 0.999238, 0, 49.8966, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage5"]
+
+[node name="Mutant" parent="Stage5/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462495, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage5/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 21.1604, 0.462494, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 8.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage5/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 4.77851, 0.462494, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 5.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage5/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462494, 8.85682)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant5" parent="Stage5/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462494, -7.85827)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage5/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage5/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage5/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage5/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage5/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage5/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage5/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage5"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage5/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage5/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage4" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 149.897, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage4"]
+
+[node name="Mutant" parent="Stage4/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462495, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage4/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 15.7517, 0.462524, 8.54944)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage4/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 11.2249, 0.462524, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant4" parent="Stage4/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462524, 16.1499)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage4/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage4/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage4/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage4/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage4/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage4/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage4/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage4"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage4/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage4/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage3" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 249.897, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage3"]
+
+[node name="Mutant" parent="Stage3/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462524, -8.29956)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage3/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -15.435, 0.462524, 14.4029)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant3" parent="Stage3/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, 3.15814, 0.462524, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 3.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage3/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage3/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage3/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage3/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage3/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage3/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage3/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage3"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage3/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage3/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 349.897, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage2"]
+
+[node name="Mutant" parent="Stage2/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462495, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 1.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="Mutant2" parent="Stage2/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462524, 7.25328)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage2/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage2/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage2/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage2/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage2/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage2/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage2/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage2"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage2/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage2/Audio"]
+stream = ExtResource("6_gcwv2")
+volume_db = -5.0
+autoplay = true
+
+[node name="Stage1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 449.897, 0)
+
+[node name="Node3D5" type="Node3D" parent="Stage1"]
+
+[node name="Mutant" parent="Stage1/Node3D5" instance=ExtResource("9_wp6o8")]
+transform = Transform3D(-0.99812, 0, -1.11971, 0, 1.5, 0, 1.11971, 0, -0.99812, -6.55204, 0.462495, -1.63127)
+DetectionRange = 50.0
+MinDistanceToPlayer = 3.0
+MaxDistanceFromSpawn = 50.0
+Speed = 4.0
+AttackRange = 4.0
+Label = "A"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Stage1/Node3D5"]
+navigation_mesh = SubResource("NavigationMesh_dgldw")
+
+[node name="MetalCSGBox3D3" type="CSGBox3D" parent="Stage1/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, 50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D4" type="CSGBox3D" parent="Stage1/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185716, -50)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(100, 1, 1)
+
+[node name="MetalCSGBox3D5" type="CSGBox3D" parent="Stage1/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, 50, 0.185716, 0.0680366)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(91.0016, 1, 1)
+
+[node name="MetalCSGBox3D6" type="CSGBox3D" parent="Stage1/Node3D5/NavigationRegion3D" groups=["Metal"]]
+transform = Transform3D(-4.85799e-08, 0, 1, 0, 1.1, 0, -1.11138, 0, -4.37114e-08, -50, 0.185716, -0.0571156)
+material_override = ExtResource("3_kljmn")
+use_collision = true
+collision_layer = 2
+collision_mask = 2
+size = Vector3(90.8083, 1, 1)
+
+[node name="Exam" type="Node3D" parent="Stage1/Node3D5/NavigationRegion3D"]
+
+[node name="ConcreteCSGBox3D2" type="CSGBox3D" parent="Stage1/Node3D5/NavigationRegion3D" groups=["Concrete"]]
+material_override = ExtResource("2_buung")
+use_collision = true
+collision_layer = 2
+size = Vector3(100, 1, 100)
+
+[node name="Audio" type="Node3D" parent="Stage1"]
+
+[node name="Ambience" type="AudioStreamPlayer2D" parent="Stage1/Audio"]
+stream = ExtResource("5_ut7sm")
+volume_db = -15.0
+autoplay = true
+
+[node name="Wind_Ambience" type="AudioStreamPlayer2D" parent="Stage1/Audio"]
 stream = ExtResource("6_gcwv2")
 volume_db = -5.0
 autoplay = true

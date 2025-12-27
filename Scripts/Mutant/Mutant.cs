@@ -96,6 +96,7 @@ public partial class Mutant : CharacterBody3D
 			Velocity = new Vector3(Velocity.X, Velocity.Y - Gravity * (float)delta, Velocity.Z);
 		else
 			Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
+
 		// Calculate distance to player
 		float distanceToPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
 		// Calculate distance from spawn point
@@ -119,43 +120,17 @@ public partial class Mutant : CharacterBody3D
 			}
 			useSwipe = !useSwipe;
 		}
-		else if (distanceToPlayer <= DetectionRange && distanceToPlayer > MinDistanceToPlayer && distanceFromSpawn < MaxDistanceFromSpawn)
+		else if (distanceToPlayer <= DetectionRange && distanceToPlayer > MinDistanceToPlayer)
 		{
-			if (navAgent != null)
-			{
-				navAgent.TargetPosition = player.GlobalPosition;
-				if (!navAgent.IsNavigationFinished())
-				{
-					Vector3 nextTargetPosition = navAgent.GetNextPathPosition();
-					Vector3 direction = (nextTargetPosition - GlobalPosition);
-					direction.Y = 0;
-					direction = direction.Normalized();
-					Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
-				}
-				else
-				{
-					Velocity = new Vector3(0, Velocity.Y, 0);
-				}
-			}
-			else
-			{
-				Vector3 direction = (player.GlobalPosition - GlobalPosition);
-				direction.Y = 0;
-				direction = direction.Normalized();
-				Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
-			}
+			Vector3 direction = (player.GlobalPosition - GlobalPosition);
+			direction.Y = 0;
+			direction = direction.Normalized();
+			Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
+			MoveAndSlide();
 			animationTree.Set("parameters/conditions/punch", false);
 			animationTree.Set("parameters/conditions/swipe", false);
 			animationTree.Set("parameters/conditions/run", true);
 		}
-		else
-		{
-			Velocity = new Vector3(0, Velocity.Y, 0);
-			animationTree.Set("parameters/conditions/run", false);
-			animationTree.Set("parameters/conditions/punch", false);
-			animationTree.Set("parameters/conditions/swipe", false);
-		}
-		MoveAndSlide();
 	}
 	
 	private bool IsTargetInRange()
